@@ -89,4 +89,8 @@ public class Input {
 	public boolean isExit() {
 		return is(ESCAPE);
 	}
+	
+	public boolean isPause() {
+		return is(P);
+	}
 }

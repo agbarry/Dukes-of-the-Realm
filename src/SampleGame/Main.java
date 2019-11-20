@@ -25,6 +25,7 @@ public class Main extends Application {
 
 	private Image playerImage;
 	private Image enemyImage;
+	private Image enemyImage1; //Pour le second ennemi
 	private Image missileImage;
 
 	private Player player;
@@ -34,6 +35,7 @@ public class Main extends Application {
 	private Text scoreMessage = new Text();
 	private int scoreValue = 0;
 	private boolean collision = false;
+	private boolean pause = true;
 
 	private Scene scene;
 	private Input input;
@@ -60,37 +62,41 @@ public class Main extends Application {
 		gameLoop = new AnimationTimer() {
 			@Override
 			public void handle(long now) {
+				
 				processInput(input, now);
 
-				// player input
-				player.processInput();
+				if( pause) {
+					// player input
+					player.processInput();
 
-				// add random enemies
-				spawnEnemies(true);
+					// add random enemies
+					spawnEnemies(true);
 
-				// movement
-				player.move();
-				enemies.forEach(sprite -> sprite.move());
-				missiles.forEach(sprite -> sprite.move());
+					// movement
+					player.move();
+					enemies.forEach(sprite -> sprite.move());
+					missiles.forEach(sprite -> sprite.move());
 
-				// check collisions
-				checkCollisions();
+					// check collisions
+					checkCollisions();
 
-				// update sprites in scene
-				player.updateUI();
-				enemies.forEach(sprite -> sprite.updateUI());
-				missiles.forEach(sprite -> sprite.updateUI());
+					// update sprites in scene
+					player.updateUI();
+					enemies.forEach(sprite -> sprite.updateUI());
+					missiles.forEach(sprite -> sprite.updateUI());
 
-				// check if sprite can be removed
-				enemies.forEach(sprite -> sprite.checkRemovability());
-				missiles.forEach(sprite -> sprite.checkRemovability());
+					// check if sprite can be removed
+					enemies.forEach(sprite -> sprite.checkRemovability());
+					missiles.forEach(sprite -> sprite.checkRemovability());
 
-				// remove removables from list, layer, etc
-				removeSprites(enemies);
-				removeSprites(missiles);
+					// remove removables from list, layer, etc
+					removeSprites(enemies);
+					removeSprites(missiles);
 
-				// update score, health, etc
-				update();
+					// update score, health, etc
+					update();
+				}
+				
 			}
 
 			private void processInput(Input input, long now) {
@@ -99,6 +105,8 @@ public class Main extends Application {
 					System.exit(0);
 				} else if (input.isFire()) {
 					fire(now);
+				} else if (input.isPause() ) {
+					pause = false;
 				}
 
 			}
@@ -111,6 +119,7 @@ public class Main extends Application {
 		playerImage = new Image(getClass().getResource("/images/alien.png").toExternalForm(), 100, 100, true, true);
 		enemyImage = new Image(getClass().getResource("/images/enemy.png").toExternalForm(), 50, 50, true, true);
 		missileImage = new Image(getClass().getResource("/images/pinapple.png").toExternalForm(), 20, 20, true, true);
+		enemyImage1 = new Image(getClass().getResource("/images/enemy1.png").toExternalForm(), 80, 80, true, true);// Pour créer deux types d'ennemis.
 
 		input = new Input(scene);
 		input.addListeners();
@@ -167,7 +176,16 @@ public class Main extends Application {
 		double x = rnd.nextDouble() * (Settings.SCENE_WIDTH - enemyImage.getWidth());
 		double y = -enemyImage.getHeight();
 		Enemy enemy = new Enemy(playfieldLayer, enemyImage, x, y, 1, 1, speed);
+		
+		// Pour la l'ajout d'un autre ennemi
+		double x1 = rnd.nextDouble() * (Settings.SCENE_WIDTH - enemyImage1.getWidth());
+		double y1 = -enemyImage1.getHeight();
+		int nbreVie = rnd.nextInt(5)+1; //Pour choisir le nombre de vie de [1-5]
+		Enemy enemy1 = new Enemy(playfieldLayer, enemyImage1, x1, y1, nbreVie, 1, speed);
+		
 		enemies.add(enemy);
+		enemies.add(enemy1);
+		
 	}
 
 	private void fire(long now) {

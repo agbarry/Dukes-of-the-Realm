@@ -1,4 +1,4 @@
-package SampleGame;
+package edu.duckesoftherealm;
 
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;

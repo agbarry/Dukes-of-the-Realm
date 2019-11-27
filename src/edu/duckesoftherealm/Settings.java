@@ -1,9 +1,9 @@
-package SampleGame;
+package edu.duckesoftherealm;
 
 public class Settings {
 
-	public static final double SCENE_WIDTH = 1000;
-    public static final double SCENE_HEIGHT = 950;
+	public static final double SCENE_WIDTH = 800;
+    public static final double SCENE_HEIGHT = 850;
 	public static final double STATUS_BAR_HEIGHT = 50;
 
 

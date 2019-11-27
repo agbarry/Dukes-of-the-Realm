@@ -1,4 +1,4 @@
-package SampleGame;
+package edu.duckesoftherealm;
 
 import java.util.BitSet;
 

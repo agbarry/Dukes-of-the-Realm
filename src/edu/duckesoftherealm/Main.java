@@ -20,6 +20,8 @@ public class Main extends Application {
 
 	private Scene scene;
 	
+	//private Troop t1 = Troop.Piquier;
+	
 	Group root;
 
 	@Override

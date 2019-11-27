@@ -8,8 +8,6 @@ package edu.duckesoftherealm;
  *
  */
 public enum Troop {
-	
-	
 	// Le troupes possibles
 	Piquier(100, 5, 2, 1, 1),
 	Chevalier(500, 20, 6, 3, 5),
@@ -48,7 +46,4 @@ public enum Troop {
 	public int getDammage() {
 		return dammage;
 	}
-	
-	
-
 }

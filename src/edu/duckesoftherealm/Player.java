@@ -1,18 +1,27 @@
 package edu.duckesoftherealm;
 
-import javafx.scene.image.Image;
-import javafx.scene.layout.Pane;
-
 public class Player extends Sprite {
 
 	private Input input;
 	
-	private String playerName;
+	private String playerName;	// Le nom du joueur
 	
-	private double speed;	
-	private double fireFrequency;
-	
-	
-
 	// A terminer après
+
+	public Player(Input input, String playerName) {
+		super();
+		this.input = input;
+		this.playerName = playerName;
+	}
+
+	public Input getInput() {
+		return input;
+	}
+
+	public String getPlayerName() {
+		return playerName;
+	}
+	
+	
+	
 }

@@ -3,24 +3,29 @@
  */
 package edu.duckesoftherealm;
 
+import javafx.scene.image.Image;
+import javafx.scene.layout.Pane;
+
 /**
  * @author agbarry
  *
  */
-public class Soldier extends Player {
+public class Soldier extends Sprite {
 	
 	private Troop troopSoldier;	// Le type de troupe du soldat
 	private double speed;		// La vitesse du soldat
-	private int dammage;		// La santé du soldat
+	
+	
 	
 	// A terminer après
 	
-	public Soldier(Input input, String playerName, Troop troopSoldier, double speed, int dammage) {
-		super(input, playerName);
+	public Soldier(Pane layer, Image image, double x, double y, int health, double damage, Troop troopSoldier,
+			double speed) {
+		super(layer, image, x, y, health, damage);
 		this.troopSoldier = troopSoldier;
 		this.speed = speed;
-		this.dammage = dammage;
 	}
+	
 
 	public Troop getTroopSoldier() {
 		return troopSoldier;
@@ -30,9 +35,20 @@ public class Soldier extends Player {
 		return speed;
 	}
 
-	public int getDammage() {
-		return dammage;
+
+	@Override
+	public String toString() {
+		return "Soldier [troopSoldier=" + troopSoldier + ", speed=" + speed + "]";
 	}
+
+
+	@Override
+	public void checkRemovability() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
 	
 	
 	

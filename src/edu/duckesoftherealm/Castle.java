@@ -32,7 +32,6 @@ public abstract class Castle {
     
 	public Castle(ImageView imageView, Pane layer, long treasure, long level, ArrayList<Soldier> listSoldier,
 			Production_Unit pUnit, Displacement moveOrder, int gateX, int gateY) {
-		super();
 		this.imageView = imageView;
 		this.layer = layer;
 		this.treasure = treasure;

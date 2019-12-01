@@ -14,7 +14,7 @@ public abstract class Sprite {
     protected double y;
 
     /*protected double dx;
-    protected double dy;*/
+    protected double dy; */
 
     private int health;
     private double damage;

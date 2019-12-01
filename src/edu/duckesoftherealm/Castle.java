@@ -5,6 +5,7 @@ package edu.duckesoftherealm;
 
 import java.util.ArrayList;
 
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 
@@ -18,8 +19,11 @@ public abstract class Castle {
 
     private Pane layer;
     
-    private long treasure;	// Le tresor du chateaux
-    private long level;		// Le niveau du chateaux
+    protected double x;
+    protected double y;
+    
+    private double treasure;	// Le tresor du chateaux
+    private int level;		// Le niveau du chateaux
     
     protected ArrayList<Soldier> listSoldier;	// La liste de soldat
     protected Production_Unit pUnit;	// L'unité de production
@@ -28,12 +32,14 @@ public abstract class Castle {
     private int gateX;	// Coordonnée x de la porte
     private int gateY;	// Coordonnée y de la porte
     
-    // A terminer après
+    public Castle(Image image, Pane layer, double x, double y, double treasure, int level,
+			ArrayList<Soldier> listSoldier, Production_Unit pUnit, Displacement moveOrder, int gateX, int gateY) {
     
-	public Castle(ImageView imageView, Pane layer, long treasure, long level, ArrayList<Soldier> listSoldier,
-			Production_Unit pUnit, Displacement moveOrder, int gateX, int gateY) {
-		this.imageView = imageView;
 		this.layer = layer;
+		this.x = x;
+		this.y = y;
+		this.imageView = new ImageView(image);
+		this.imageView.relocate(x, y);
 		this.treasure = treasure;
 		this.level = level;
 		this.listSoldier = listSoldier;
@@ -41,7 +47,15 @@ public abstract class Castle {
 		this.moveOrder = moveOrder;
 		this.gateX = gateX;
 		this.gateY = gateY;
+		
+		addToLayer();
 	}
+
+	// A terminer après 
+
+	public void addToLayer() {
+        this.layer.getChildren().add(this.imageView);
+    }
 
 	public ImageView getImageView() {
 		return imageView;
@@ -51,11 +65,11 @@ public abstract class Castle {
 		return layer;
 	}
 
-	public long getTreasure() {
+	public double getTreasure() {
 		return treasure;
 	}
 
-	public long getLevel() {
+	public int getLevel() {
 		return level;
 	}
 
@@ -77,8 +91,5 @@ public abstract class Castle {
 
 	public int getGateY() {
 		return gateY;
-	}
-	
-	
-    
+	} 
 }

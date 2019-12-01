@@ -24,6 +24,7 @@ public class Main extends Application {
 	
 	private Pane playfieldLayer;
 
+	private Image castleNormalImage;
 	private Image playerImage;
 	private Image soldierImage;
 	
@@ -31,14 +32,16 @@ public class Main extends Application {
 	private String soldierName;
 
 	private Player player;
-	private Soldier soldier;
-	private Troop troop;
-	private List<Soldier> soldiers = new ArrayList<>();
+	
+	private Troop troop1 = Troop.Piquier;
+	private Troop troop2 = Troop.Chevalier;
+	private Troop troop3 = Troop.Onagre;
+	
+	private ArrayList<CastleNormal> castlesNormal = new ArrayList<>();
+	private ArrayList<Soldier> soldiers = new ArrayList<>();
 
 	private Scene scene;
 	private Input input;
-	
-	
 	
 	Group root;
 
@@ -52,7 +55,7 @@ public class Main extends Application {
 		// Create window
 		primaryStage.setTitle("Dukes of the Realm"); // Setting the title to Stage
 		primaryStage.setScene(scene);
-		primaryStage.setResizable(true);
+		primaryStage.setResizable(false);
 		primaryStage.show();
 		
 		playfieldLayer = new Pane();
@@ -86,17 +89,19 @@ public class Main extends Application {
 	
 	
 	private void loadGame() {
-		playerImage = new Image(getClass().getResource("/images/chateaux.jpg").toExternalForm(), 30, 30, true, true);
+		castleNormalImage = new Image(getClass().getResource("/images/chateaux.jpg").toExternalForm(), 200, 200, true, true);
+		
+		playerImage = new Image(getClass().getResource("/images/images.jpeg").toExternalForm(), 50, 50, true, true);
 		playerName = "Aguibou";
-		soldierImage = new Image(getClass().getResource("/images/images.jpeg").toExternalForm(), 20, 20, true, true);
+		
+		soldierImage = new Image(getClass().getResource("/images/images.jpeg").toExternalForm(), 20, 20, true, true); 
 		soldierName = "Soldat";
 		
-		for(int i=0; i<10; i++)
-			createPlayer();
 		
-		
-		createStatusBar();
-		
+		//for(int i=0; i<5; i++) 
+		createCaste();
+	
+		createStatusBar();	
 	}
 	
 	public void createStatusBar() {
@@ -108,15 +113,33 @@ public class Main extends Application {
 	}
 	
 	private void createPlayer() {
-		double x = rnd.nextInt(860);
-		double y = rnd.nextInt(860);
-		//troop = Troop.Piquier;
+		double x = rnd.nextInt(680);
+		double y = rnd.nextInt(620);
 		
 		player = new Player(playfieldLayer, playerImage, x, y, Settings.PLAYER_HEALTH, Settings.PLAYER_DAMAGE, input, playerName);
 		
-		/*soldier = new Soldier(playfieldLayer, soldierImage, x, y, Settings.SOLDIER_HEALTH, Settings.SOLDIER_DAMAGE, troop, Settings.SOLDIER_SPEED);
-		soldiers.add(soldier);*/
+		Soldier soldier = new Soldier(playfieldLayer, soldierImage, x+1, y+1, Settings.SOLDIER_HEALTH, Settings.SOLDIER_DAMAGE, troop1, Settings.SOLDIER_SPEED);
+		soldiers.add(soldier);
 	}	
+	
+	private void createCaste() {
+		createPlayer();
+		
+		int x = rnd.nextInt(680);
+		int y = rnd.nextInt(620);
+		
+		Displacement displacement = new Displacement();
+		Production_Unit product = new Production_Unit();
+		
+		CastleNormal castleNormal = new CastleNormal(castleNormalImage, playfieldLayer, x, y, 200.5, 1, soldiers, product, displacement, 350, 350, player);
+		castlesNormal.add(castleNormal);
+		
+		// A revoir demain pour que les joueurs puisse etre dans le chateaux
+		/*
+		 * player.setX(x); player.setY(y); player.updateUI();
+		 */
+		
+	}
 	
 
 	public static void main(String[] args) {

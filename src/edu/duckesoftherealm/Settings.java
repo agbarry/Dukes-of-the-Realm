@@ -2,8 +2,8 @@ package edu.duckesoftherealm;
 
 public class Settings {
 
-	public static final double SCENE_WIDTH = 1020;
-    public static final double SCENE_HEIGHT = 1020;
+	public static final double SCENE_WIDTH = 820;
+    public static final double SCENE_HEIGHT = 620;
 	public static final double STATUS_BAR_HEIGHT = 40;
 
 

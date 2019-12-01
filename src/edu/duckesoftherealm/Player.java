@@ -8,6 +8,8 @@ public class Player extends Sprite {
 	private Input input;
 	
 	private String playerName;	// Le nom du joueur
+	
+	// A terminer après
 
 	public Player(Pane layer, Image image, double x, double y, int health, double damage, Input input,
 			String playerName) {
@@ -29,15 +31,5 @@ public class Player extends Sprite {
 	public String toString() {
 		return "Player [input=" + input + ", playerName=" + playerName + "]";
 	}
-	
-	
-	
-	// A terminer après
-	
-	
-
-	
-	
-	
 	
 }

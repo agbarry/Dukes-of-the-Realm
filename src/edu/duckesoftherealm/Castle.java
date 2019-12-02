@@ -16,6 +16,8 @@ import javafx.scene.layout.Pane;
 public abstract class Castle {
 	
 	private ImageView imageView;
+	private double w;	// Pour la largeur de l'image
+    private double h;	// Pour la hauteur de l'image
 
     private Pane layer;
     
@@ -38,13 +40,19 @@ public abstract class Castle {
 		this.layer = layer;
 		this.x = x;
 		this.y = y;
+		
 		this.imageView = new ImageView(image);
 		this.imageView.relocate(x, y);
+		this.w = image.getWidth(); 
+        this.h = image.getHeight();
+		
 		this.treasure = treasure;
 		this.level = level;
+		
 		this.listSoldier = listSoldier;
 		this.pUnit = pUnit;
 		this.moveOrder = moveOrder;
+		
 		this.gateX = gateX;
 		this.gateY = gateY;
 		
@@ -68,6 +76,22 @@ public abstract class Castle {
 	public double getTreasure() {
 		return treasure;
 	}
+	
+	public double getWidth() {
+        return w;
+    }
+
+    public double getHeight() {
+        return h;
+    }
+
+    public double getCenterX() {
+        return x + w * 0.5;
+    }
+
+    public double getCenterY() {
+        return y + h * 0.5;
+    }
 
 	public int getLevel() {
 		return level;
@@ -75,6 +99,10 @@ public abstract class Castle {
 
 	public ArrayList<Soldier> getListSoldier() {
 		return listSoldier;
+	}
+	
+	public void setListSoldier(ArrayList<Soldier> listSoldier) {
+		this.listSoldier = listSoldier;
 	}
 
 	public Production_Unit getpUnit() {

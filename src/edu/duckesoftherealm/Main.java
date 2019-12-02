@@ -32,6 +32,7 @@ public class Main extends Application {
 	private String soldierName;
 
 	private Player player;
+	private CastleNormal castleNormal;
 	
 	private Troop troop1 = Troop.Piquier;
 	private Troop troop2 = Troop.Chevalier;
@@ -89,17 +90,17 @@ public class Main extends Application {
 	
 	
 	private void loadGame() {
-		castleNormalImage = new Image(getClass().getResource("/images/chateaux.jpg").toExternalForm(), 200, 200, true, true);
+		castleNormalImage = new Image(getClass().getResource("/images/chateaux.jpg").toExternalForm(), 260, 260, true, true);
 		
-		playerImage = new Image(getClass().getResource("/images/images.jpeg").toExternalForm(), 50, 50, true, true);
+		playerImage = new Image(getClass().getResource("/images/images.jpeg").toExternalForm(), 20, 20, true, true);
 		playerName = "Aguibou";
 		
-		soldierImage = new Image(getClass().getResource("/images/images.jpeg").toExternalForm(), 20, 20, true, true); 
+		soldierImage = new Image(getClass().getResource("/images/images.jpeg").toExternalForm(), 10, 10, true, true); 
 		soldierName = "Soldat";
 		
 		
-		//for(int i=0; i<5; i++) 
-		createCaste();
+		for(int i=0; i<2; i++) 
+			createCaste();
 	
 		createStatusBar();	
 	}
@@ -110,35 +111,34 @@ public class Main extends Application {
 		statusBar.relocate(0, Settings.SCENE_HEIGHT);
 		statusBar.setPrefSize(Settings.SCENE_WIDTH, Settings.STATUS_BAR_HEIGHT);
 		root.getChildren().add(statusBar);
-	}
-	
-	private void createPlayer() {
-		double x = rnd.nextInt(680);
-		double y = rnd.nextInt(620);
-		
-		player = new Player(playfieldLayer, playerImage, x, y, Settings.PLAYER_HEALTH, Settings.PLAYER_DAMAGE, input, playerName);
-		
-		Soldier soldier = new Soldier(playfieldLayer, soldierImage, x+1, y+1, Settings.SOLDIER_HEALTH, Settings.SOLDIER_DAMAGE, troop1, Settings.SOLDIER_SPEED);
-		soldiers.add(soldier);
 	}	
 	
 	private void createCaste() {
-		createPlayer();
 		
-		int x = rnd.nextInt(680);
-		int y = rnd.nextInt(620);
+		int x = rnd.nextInt(620);
+		int y = rnd.nextInt(520);
 		
 		Displacement displacement = new Displacement();
 		Production_Unit product = new Production_Unit();
 		
-		CastleNormal castleNormal = new CastleNormal(castleNormalImage, playfieldLayer, x, y, 200.5, 1, soldiers, product, displacement, 350, 350, player);
-		castlesNormal.add(castleNormal);
+		castleNormal = new CastleNormal(castleNormalImage, playfieldLayer, x, y, 200.5, 1, null, product, displacement, 350, 350, null);
 		
 		// A revoir demain pour que les joueurs puisse etre dans le chateaux
-		/*
-		 * player.setX(x); player.setY(y); player.updateUI();
-		 */
+		createPlayer();
+		castleNormal.setListSoldier(soldiers);
+		castleNormal.setDuke(player);
+		castlesNormal.add(castleNormal);
 		
+	}
+	
+	private void createPlayer() {
+		double x = castleNormal.getCenterX();
+		double y = castleNormal.getCenterY();
+		
+		player = new Player(playfieldLayer, playerImage, x, y, Settings.PLAYER_HEALTH, Settings.PLAYER_DAMAGE, input, playerName);
+		
+		Soldier soldier = new Soldier(playfieldLayer, soldierImage, x-20, y-30, Settings.SOLDIER_HEALTH, Settings.SOLDIER_DAMAGE, troop1, Settings.SOLDIER_SPEED);
+		soldiers.add(soldier);
 	}
 	
 

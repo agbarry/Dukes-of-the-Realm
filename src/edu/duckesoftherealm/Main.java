@@ -1,7 +1,6 @@
 package edu.duckesoftherealm;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import java.util.Random;
 
@@ -13,10 +12,6 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-/*import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;*/
 
 public class Main extends Application {
 	
@@ -90,7 +85,7 @@ public class Main extends Application {
 	
 	
 	private void loadGame() {
-		castleNormalImage = new Image(getClass().getResource("/images/chateaux.jpg").toExternalForm(), 260, 260, true, true);
+		castleNormalImage = new Image(getClass().getResource("/images/chateaux.jpg").toExternalForm(), 240, 240, true, true);
 		
 		playerImage = new Image(getClass().getResource("/images/images.jpeg").toExternalForm(), 20, 20, true, true);
 		playerName = "Aguibou";
@@ -115,8 +110,16 @@ public class Main extends Application {
 	
 	private void createCaste() {
 		
-		int x = rnd.nextInt(620);
-		int y = rnd.nextInt(520);
+		int x = rnd.nextInt(820) + 5;
+		int y = rnd.nextInt(620)+ 5;
+		
+		System.out.println("X ="+x+" Y="+y);
+		System.out.println("ImageX="+castleNormalImage.getWidth()+" ImageY="+castleNormalImage.getHeight());
+		
+		if( (x+castleNormalImage.getWidth())>=Settings.SCENE_WIDTH)
+			x -= castleNormalImage.getWidth()-10;
+		if( (y+castleNormalImage.getHeight())>=Settings.SCENE_HEIGHT)
+			y -= castleNormalImage.getHeight() -10;
 		
 		Displacement displacement = new Displacement();
 		Production_Unit product = new Production_Unit();
@@ -125,8 +128,10 @@ public class Main extends Application {
 		
 		// A revoir demain pour que les joueurs puisse etre dans le chateaux
 		createPlayer();
+		
 		castleNormal.setListSoldier(soldiers);
 		castleNormal.setDuke(player);
+		
 		castlesNormal.add(castleNormal);
 		
 	}
@@ -140,6 +145,7 @@ public class Main extends Application {
 		Soldier soldier = new Soldier(playfieldLayer, soldierImage, x-20, y-30, Settings.SOLDIER_HEALTH, Settings.SOLDIER_DAMAGE, troop1, Settings.SOLDIER_SPEED);
 		soldiers.add(soldier);
 	}
+	
 	
 
 	public static void main(String[] args) {

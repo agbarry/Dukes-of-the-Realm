@@ -16,9 +16,6 @@ public class Soldier extends Sprite {
 	private double speed;		// La vitesse du soldat
 	
 	
-	
-	// A terminer après
-	
 	public Soldier(Pane layer, Image image, double x, double y, int health, double damage, Troop troopSoldier,
 			double speed) {
 		super(layer, image, x, y, health, damage);

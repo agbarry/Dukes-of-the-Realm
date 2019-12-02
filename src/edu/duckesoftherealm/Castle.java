@@ -16,8 +16,8 @@ import javafx.scene.layout.Pane;
 public abstract class Castle {
 	
 	private ImageView imageView;
-	private double w;	// Pour la largeur de l'image
-    private double h;	// Pour la hauteur de l'image
+	private double w;	// Pour reccuperer la largeur de l'image
+    private double h;	// Pour reccuperer la hauteur de l'image
 
     private Pane layer;
     
@@ -59,13 +59,12 @@ public abstract class Castle {
 		addToLayer();
 	}
 
-	// A terminer après 
 
 	public void addToLayer() {
         this.layer.getChildren().add(this.imageView);
     }
 
-	public ImageView getImageView() {
+	protected ImageView getImageView() {
 		return imageView;
 	}
 
@@ -120,4 +119,9 @@ public abstract class Castle {
 	public int getGateY() {
 		return gateY;
 	} 
+	
+	// Pour la gestion des collissions des chateaux
+    public boolean collidesWith(Castle castle) {
+    	return getImageView().getBoundsInParent().intersects(castle.getImageView().getBoundsInParent());
+    }
 }

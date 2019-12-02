@@ -9,7 +9,6 @@ public class Player extends Sprite {
 	
 	private String playerName;	// Le nom du joueur
 	
-	// A terminer après
 
 	public Player(Pane layer, Image image, double x, double y, int health, double damage, Input input,
 			String playerName) {

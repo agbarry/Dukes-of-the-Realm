@@ -30,12 +30,11 @@ public abstract class Castle {
     protected ArrayList<Soldier> listSoldier;	// La liste de soldat
     protected Production_Unit pUnit;	// L'unité de production
     private Displacement moveOrder;	// Ordre de déplacement 
+    private Gate gate;	// Pour la porte du chateaux
     
-    private int gateX;	// Coordonnée x de la porte
-    private int gateY;	// Coordonnée y de la porte
     
     public Castle(Image image, Pane layer, double x, double y, double treasure, int level,
-			ArrayList<Soldier> listSoldier, Production_Unit pUnit, Displacement moveOrder, int gateX, int gateY) {
+			ArrayList<Soldier> listSoldier, Production_Unit pUnit, Displacement moveOrder, Gate gate) {
     
 		this.layer = layer;
 		this.x = x;
@@ -53,8 +52,7 @@ public abstract class Castle {
 		this.pUnit = pUnit;
 		this.moveOrder = moveOrder;
 		
-		this.gateX = gateX;
-		this.gateY = gateY;
+		this.gate = gate;
 		
 		addToLayer();
 	}
@@ -111,15 +109,40 @@ public abstract class Castle {
 	public Displacement getMoveOrder() {
 		return moveOrder;
 	}
-
-	public int getGateX() {
-		return gateX;
+	
+	public Gate getGate() {
+		return gate;
 	}
 
-	public int getGateY() {
-		return gateY;
-	} 
+
+	public void setGate(Gate gate) {
+		this.gate = gate;
+	}
+
+	public double getX() {
+		return x;
+	}
+
+
+	public void setX(double x) {
+		this.x = x;
+	}
+
+
+	public double getY() {
+		return y;
+	}
+
+
+	public void setY(double y) {
+		this.y = y;
+	}
 	
+	public void updateCastle() {
+        imageView.relocate(x, y);
+    }
+
+
 	// Pour la gestion des collissions des chateaux
     public boolean collidesWith(Castle castle) {
     	return getImageView().getBoundsInParent().intersects(castle.getImageView().getBoundsInParent());

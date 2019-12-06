@@ -15,15 +15,16 @@ public class Gate {
 
     private Pane layer;
 	
-	private int gateX;	// Coordonnée x de la porte
-    private int gateY;	// Coordonnée y de la porte
+	private double gateX;	// Coordonnée x de la porte
+    private double gateY;	// Coordonnée y de la porte
+    
 	/**
 	 * @param imageView
 	 * @param layer
 	 * @param gateX
 	 * @param gateY
 	 */
-	public Gate(Image image, Pane layer, int gateX, int gateY) {
+	public Gate(Image image, Pane layer, double gateX, double gateY) {
 		
 		this.layer = layer;
 		
@@ -51,7 +52,7 @@ public class Gate {
 		this.imageView = imageView;
 	}
 
-	public int getGateX() {
+	public double getGateX() {
 		return gateX;
 	}
 
@@ -59,7 +60,7 @@ public class Gate {
 		this.gateX = gateX;
 	}
 
-	public int getGateY() {
+	public double getGateY() {
 		return gateY;
 	}
 

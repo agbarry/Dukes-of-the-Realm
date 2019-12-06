@@ -22,19 +22,21 @@ public class Main extends Application {
 	private Image castleNormalImage;
 	private Image playerImage;
 	private Image soldierImage;
+	private Image gateImage;
 	
 	private String playerName;
 	private String soldierName;
 
 	private Player player;
 	private CastleNormal castleNormal;
+	private Gate gate;
 	
 	private Troop troop1 = Troop.Piquier;
-	private Troop troop2 = Troop.Chevalier;
-	private Troop troop3 = Troop.Onagre;
 	
 	private ArrayList<CastleNormal> castlesNormal = new ArrayList<>();
 	private ArrayList<Soldier> soldiers = new ArrayList<>();
+	
+	private boolean collision = false;
 
 	private Scene scene;
 	private Input input;
@@ -85,7 +87,7 @@ public class Main extends Application {
 	
 	
 	private void loadGame() {
-		castleNormalImage = new Image(getClass().getResource("/images/chateaux.jpg").toExternalForm(), 240, 240, true, true);
+		castleNormalImage = new Image(getClass().getResource("/images/porte.jpg").toExternalForm(), 160, 160, true, true);
 		
 		playerImage = new Image(getClass().getResource("/images/images.jpeg").toExternalForm(), 20, 20, true, true);
 		playerName = "Aguibou";
@@ -93,8 +95,10 @@ public class Main extends Application {
 		soldierImage = new Image(getClass().getResource("/images/images.jpeg").toExternalForm(), 10, 10, true, true); 
 		soldierName = "Soldat";
 		
+		gateImage = new Image(getClass().getResource("/images/porte1.jpg").toExternalForm(), 20, 20, true, true);
 		
-		for(int i=0; i<2; i++) 
+		
+		for(int i=0; i<3; i++) 
 			createCaste();
 	
 		createStatusBar();	
@@ -113,8 +117,8 @@ public class Main extends Application {
 		int x = rnd.nextInt(820) + 5;
 		int y = rnd.nextInt(620)+ 5;
 		
-		System.out.println("X ="+x+" Y="+y);
-		System.out.println("ImageX="+castleNormalImage.getWidth()+" ImageY="+castleNormalImage.getHeight());
+		/*System.out.println("X ="+x+" Y="+y);
+		System.out.println("ImageX="+castleNormalImage.getWidth()+" ImageY="+castleNormalImage.getHeight());*/
 		
 		if( (x+castleNormalImage.getWidth())>=Settings.SCENE_WIDTH)
 			x -= castleNormalImage.getWidth()-10;
@@ -122,17 +126,34 @@ public class Main extends Application {
 			y -= castleNormalImage.getHeight() -10;
 		
 		Displacement displacement = new Displacement();
-		Production_Unit product = new Production_Unit();
+		Production_Unit product = new Production_Unit(); 
 		
-		castleNormal = new CastleNormal(castleNormalImage, playfieldLayer, x, y, 200.5, 1, null, product, displacement, 350, 350, null);
+		// Création du chateaux
+		castleNormal = new CastleNormal(castleNormalImage, playfieldLayer, x, y, 200.5, 1, null, product, displacement, null, null);
 		
-		// A revoir demain pour que les joueurs puisse etre dans le chateaux
-		createPlayer();
+//		if(castlesNormal.size()>0)
+//		for(CastleNormal cN: castlesNormal) {
+//			if(castleNormal.collidesWith(cN)) {
+//				System.out.println("Collision");
+//				if(castleNormal.getX()>=cN.getX() && castleNormal.getX()<=cN.getX()+castleNormalImage.getWidth())
+//					castleNormal.setX(x+castleNormalImage.getWidth());
+//				
+//				if(castleNormal.getY()>=cN.getY() && castleNormal.getY()<=cN.getY()+castleNormalImage.getHeight())
+//					castleNormal.setY(y+castleNormalImage.getHeight());
+//				
+//				castleNormal.updateCastle();	
+//			}
+//		}
 		
-		castleNormal.setListSoldier(soldiers);
-		castleNormal.setDuke(player);
+		createGate(x, y);	// Création de la porte
 		
-		castlesNormal.add(castleNormal);
+		createPlayer();	// Création du joueur propriétaire du chateaux ainsi que ses soldats
+		
+		castleNormal.setListSoldier(soldiers);	// Modification des listes de soldats du chateaux
+		castleNormal.setGate(gate);				// Moddification de la porte du chateaux
+		castleNormal.setDuke(player);			// Modification du propriétaire du chateaux;
+		
+		castlesNormal.add(castleNormal);		// Ajout du chateaux dans la liste de chateaux
 		
 	}
 	
@@ -144,6 +165,29 @@ public class Main extends Application {
 		
 		Soldier soldier = new Soldier(playfieldLayer, soldierImage, x-20, y-30, Settings.SOLDIER_HEALTH, Settings.SOLDIER_DAMAGE, troop1, Settings.SOLDIER_SPEED);
 		soldiers.add(soldier);
+	}
+	
+	public void createGate(int x, int y) {
+		int n = rnd.nextInt(4)+1;
+		double gateX,gateY;
+		if(n==1) {	// Pour mettre la porte vers le nord
+			gateX = x+(castleNormalImage.getWidth()/2)-(gateImage.getWidth()/2);
+			gateY = y;
+		}
+		else if(n==2) {	// Pour mettre la porte vers le sud
+			gateX = x+(castleNormalImage.getWidth()/2)-(gateImage.getWidth()/2);
+			gateY = y+castleNormalImage.getHeight()-gateImage.getHeight();
+		}
+		else if(n==3) {	// Pour mettre la porte vers l'Est
+			gateX = x;
+			gateY = y+(castleNormalImage.getHeight()/2)-(gateImage.getHeight()/2);
+		}
+		else {	// Pour mettre la porte vers l'Ouest
+			gateX = x+castleNormalImage.getWidth()-gateImage.getWidth();
+			gateY = y+(castleNormalImage.getHeight()/2)-(gateImage.getHeight()/2);
+		}
+		
+		gate = new Gate(gateImage, playfieldLayer, gateX, gateY);	// Création de la porte.
 	}
 	
 	

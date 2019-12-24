@@ -6,23 +6,16 @@ package edu.duckesoftherealm;
 import java.util.ArrayList;
 
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 
 /**
  * @author agbarry
  *
  */
-public abstract class Castle {
+public abstract class Castle extends Sprite {
 	
-	private ImageView imageView;
-	private double w;	// Pour reccuperer la largeur de l'image
-    private double h;	// Pour reccuperer la hauteur de l'image
-
-    private Pane layer;
-    
-    protected double x;
-    protected double y;
+	// Variable de classe pour compter le nombre de chateaux crées dans le jeu
+	private static int nbreInstances = 0;
     
     private double treasure;	// Le tresor du chateaux
     private int level;		// Le niveau du chateaux
@@ -36,14 +29,7 @@ public abstract class Castle {
     public Castle(Image image, Pane layer, double x, double y, double treasure, int level,
 			ArrayList<Soldier> listSoldier, Production_Unit pUnit, Displacement moveOrder, Gate gate) {
     
-		this.layer = layer;
-		this.x = x;
-		this.y = y;
-		
-		this.imageView = new ImageView(image);
-		this.imageView.relocate(x, y);
-		this.w = image.getWidth(); 
-        this.h = image.getHeight();
+    	super(layer, image, x, y);
 		
 		this.treasure = treasure;
 		this.level = level;
@@ -54,41 +40,18 @@ public abstract class Castle {
 		
 		this.gate = gate;
 		
-		addToLayer();
+		nbreInstances++;
 	}
 
 
-	public void addToLayer() {
-        this.layer.getChildren().add(this.imageView);
-    }
-
-	protected ImageView getImageView() {
-		return imageView;
-	}
-
-	public Pane getLayer() {
-		return layer;
+	public static int getNbreInstances() {
+		return nbreInstances;
 	}
 
 	public double getTreasure() {
 		return treasure;
 	}
 	
-	public double getWidth() {
-        return w;
-    }
-
-    public double getHeight() {
-        return h;
-    }
-
-    public double getCenterX() {
-        return x + w * 0.5;
-    }
-
-    public double getCenterY() {
-        return y + h * 0.5;
-    }
 
 	public int getLevel() {
 		return level;
@@ -119,32 +82,5 @@ public abstract class Castle {
 		this.gate = gate;
 	}
 
-	public double getX() {
-		return x;
-	}
 
-
-	public void setX(double x) {
-		this.x = x;
-	}
-
-
-	public double getY() {
-		return y;
-	}
-
-
-	public void setY(double y) {
-		this.y = y;
-	}
-	
-	public void updateCastle() {
-        imageView.relocate(x, y);
-    }
-
-
-	// Pour la gestion des collissions des chateaux
-    public boolean collidesWith(Castle castle) {
-    	return getImageView().getBoundsInParent().intersects(castle.getImageView().getBoundsInParent());
-    }
 }

@@ -24,10 +24,12 @@ public abstract class Castle extends Sprite {
     protected Production_Unit pUnit;	// L'unité de production
     private Displacement moveOrder;	// Ordre de déplacement 
     private Gate gate;	// Pour la porte du chateaux
+    @SuppressWarnings("unused")
+	private Input input; // Pour les interactions avec les chateaux
     
     
     public Castle(Image image, Pane layer, double x, double y, double treasure, int level,
-			ArrayList<Soldier> listSoldier, Production_Unit pUnit, Displacement moveOrder, Gate gate) {
+			ArrayList<Soldier> listSoldier, Production_Unit pUnit, Displacement moveOrder, Gate gate, Input input) {
     
     	super(layer, image, x, y);
 		
@@ -39,6 +41,7 @@ public abstract class Castle extends Sprite {
 		this.moveOrder = moveOrder;
 		
 		this.gate = gate;
+		this.input = input;
 		
 		nbreInstances++;
 	}

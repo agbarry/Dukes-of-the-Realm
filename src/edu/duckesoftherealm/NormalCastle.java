@@ -5,9 +5,8 @@ import java.util.ArrayList;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 
-public class CastleNormal extends Castle {
+public class NormalCastle extends Castle {
 	
-	private Player duke;
 
 	/**
 	 * @param image
@@ -20,15 +19,19 @@ public class CastleNormal extends Castle {
 	 * @param pUnit
 	 * @param moveOrder
 	 * @param gate
+	 * @param input
 	 * @param duke
 	 */
-	public CastleNormal(Image image, Pane layer, double x, double y, double treasure, int level,
-			ArrayList<Soldier> listSoldier, Production_Unit pUnit, Displacement moveOrder, Gate gate, Player duke) {
-		
-		super(image, layer, x, y, treasure, level, listSoldier, pUnit, moveOrder, gate);
-		
+	public NormalCastle(Image image, Pane layer, double x, double y, double treasure, int level,
+			ArrayList<Soldier> listSoldier, Production_Unit pUnit, Displacement moveOrder, Gate gate, Input input,
+			Player duke) {
+		super(image, layer, x, y, treasure, level, listSoldier, pUnit, moveOrder, gate, input);
 		this.duke = duke;
 	}
+
+	private Player duke;
+
+	
 
 	public Player getDuke() {
 		return duke;

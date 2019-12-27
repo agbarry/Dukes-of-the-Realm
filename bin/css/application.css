@@ -1,17 +1,17 @@
 .statusBar {
-    -fx-background-color: #aaa888;
-    -fx-padding: 10px 50px;
+    -fx-background-color: #11a888;
+    -fx-padding: 8px 40px;
     -fx-border-color: black;
     -fx-border-style: solid;
     -fx-border-width: 2px 0 0 0;  
 	-fx-font-weight: bold;
-	-fx-font-size: 20px;
+	-fx-font-size: 16px;
 }
 
 .message {
 	-fx-alignment: center;
 	-fx-font-weight: bold;
-	-fx-font-size: 64px;	
+	-fx-font-size: 30px;	
 	-fx-fill: red;
 	-fx-stroke: black;
 }

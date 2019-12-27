@@ -4,7 +4,7 @@ public class Settings {
 
 	public static final double SCENE_WIDTH = 820;
     public static final double SCENE_HEIGHT = 620;
-	public static final double STATUS_BAR_HEIGHT = 40;
+	public static final double STATUS_BAR_HEIGHT = 60;
 
 
     public static final double PLAYER_SPEED = 4.0;
@@ -14,6 +14,9 @@ public class Settings {
     public static final double SOLDIER_SPEED = 4.0;
     public static final int    SOLDIER_HEALTH = 3;
     public static final double SOLDIER_DAMAGE = 1;
+    
+    public static final int CASTLE_DISTANCE = 20;
+    public static final int BORDER_DISTANCE = 10;
     
 
     /*public static final double MISSILE_SPEED = 4.0;

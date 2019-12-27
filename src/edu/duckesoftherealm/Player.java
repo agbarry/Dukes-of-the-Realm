@@ -6,22 +6,18 @@ import javafx.scene.layout.Pane;
 public class Player extends Sprite {
 	
 	private int health;	// La nombre de vie du joueur
-	private double damage;	// Le point de dégat du joueur
-	private Input input;
-	
+	@SuppressWarnings("unused")
+	private Input input;	// Variable pour les interactions
 	private String playerName;	// Le nom du joueur
 	
 
-	public Player(Pane layer, Image image, double x, double y, int health, double damage, Input input, String playerName) {
+	public Player(Pane layer, Image image, double x, double y, int health, Input input, String playerName) {
 		
 		super(layer, image, x, y);
 		
 		this.health = health;
-        this.damage = damage;
-		
 		this.input = input;
 		this.playerName = playerName;
-		
 	}
 
 	public int getHealth() {
@@ -30,22 +26,6 @@ public class Player extends Sprite {
 
 	public void setHealth(int health) {
 		this.health = health;
-	}
-
-	public double getDamage() {
-		return damage;
-	}
-
-	public void setDamage(double damage) {
-		this.damage = damage;
-	}
-
-	public Input getInput() {
-		return input;
-	}
-
-	public void setInput(Input input) {
-		this.input = input;
 	}
 
 	public String getPlayerName() {
@@ -62,9 +42,5 @@ public class Player extends Sprite {
 		
 	}
 
-	@Override
-	public String toString() {
-		return "Player [input=" + input + ", playerName=" + playerName + "]";
-	}
 	
 }

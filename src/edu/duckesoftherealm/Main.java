@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
@@ -21,30 +22,31 @@ public class Main extends Application {
 	
 	private Pane playfieldLayer;
 
-	private Image normalCastleImage; // Pour stocker l'image des chateaux normaux
-	private Image playerImage;	// Pour stocker l'image des ducs
-	private Image soldierImage;	// Pour stocker l'images des soldats
-	private Image gateImage;	// Pour l'image de la porte
+	private Image normalCastleImage; // Pour representer le chateaux des autres joueurs
+	private Image userCastle;		 // Pour representer le chateaux de l'utilisateur
+	private Image playerImage;		 // Pour représenter les ducs
+	private Image soldierImage;		 // Pour représenter les soldats
+	private Image gateImage;		 // Pour représenter les portes
 	
-	private String soldierName;	// Pour le nom des soldats
 	private String playerName1;
 
-	private NormalCastle normalCastle;	// Pour les chateaux normaux
+	private NormalCastle normalCastle;	// Pour instancier les chateaux
+	
+	private ArrayList<NormalCastle> castlesNormal = new ArrayList<>(); // Pour stocker tous les chateaux du royaume
+	
+	private boolean clique = false;
+	private boolean attack = false;
 	
 	private Troop troop1 = Troop.Piquier;
 	private Troop troop2 = Troop.Chevalier;
 	private Troop troop3 = Troop.Onagre;
-	
-	private ArrayList<NormalCastle> castlesNormal = new ArrayList<>();
-	//private ArrayList<Soldier> soldiers = new ArrayList<>();
-	
-	private Text informationCastle = new Text();
-	private boolean clique = false;
-	//private boolean collision = false;
 
 	private Scene scene;
 	private Input input;
 	private AnimationTimer gameLoop;
+	private Text castleInformation1;	// Pour l'affichage des informations des chateaux sur la barre de status
+	private Text castleInformation2;
+	private ImageView imageView;
 	
 	Group root;
 
@@ -55,12 +57,10 @@ public class Main extends Application {
 		scene = new Scene(root, Settings.SCENE_WIDTH, Settings.SCENE_HEIGHT + Settings.STATUS_BAR_HEIGHT);
 		scene.getStylesheets().add(getClass().getResource("/css/application.css").toExternalForm());
 		
-		System.out.println("La largeur de la fenêtre est: "+scene.getWidth());
-		System.out.println("La hauteur de la fenêtre est: "+scene.getHeight());
 		// Create window
 		primaryStage.setTitle("Dukes of the Realm"); // Setting the title to Stage
 		primaryStage.setScene(scene);
-		primaryStage.setResizable(true);
+		primaryStage.setResizable(false);
 		primaryStage.show();
 		
 		playfieldLayer = new Pane();
@@ -95,11 +95,7 @@ public class Main extends Application {
 			public void handle(long now) {
 				processInput(input, now);
 
-				// player input
-				//player.processInput();
-
-
-				// update score, health, etc
+				// Pour l'affichage des infos d'un chateaux
 				update();
 			}
 
@@ -119,95 +115,134 @@ public class Main extends Application {
 	
 	
 	private void loadGame() {
-		normalCastleImage = new Image(getClass().getResource("/images/porte.jpg").toExternalForm(), 110, 110, true, true);
+		userCastle = new Image(getClass().getResource("/images/chateaux.jpeg").toExternalForm(), 110, 110, true, true);
+		normalCastleImage = new Image(getClass().getResource("/images/chateaux1.jpg").toExternalForm(), 110, 110, true, true);
 		
 		playerImage = new Image(getClass().getResource("/images/images.jpeg").toExternalForm(), 20, 20, true, true);
-		
 		soldierImage = new Image(getClass().getResource("/images/images.jpeg").toExternalForm(), 10, 10, true, true); 
-		soldierName = "Soldat";
 		
 		gateImage = new Image(getClass().getResource("/images/porte1.jpg").toExternalForm(), 20, 20, true, true);
 		
 		input = new Input(scene);
 		input.addListeners();
 		
-		for(int i=0; i<6; i++) 
-			createCaste();
+		createNCastle(8);
 		
-		System.out.println("Le nombre de chateaux est: "+normalCastle.getNbreInstances());
+		//System.out.println("Le nombre de chateaux est: "+normalCastle.getNbreInstances());
 	
 		createStatusBar();	
 	}
 	
 	public void createStatusBar() {
 		HBox statusBar = new HBox();
-
-		informationCastle.setText("Propriétaire: "+normalCastle.getDuke().getPlayerName()+"     Niveau: "+normalCastle.getLevel()+
-				"     Quantité de troupes: "+normalCastle.getListSoldier().size()+"     Tresor: "+normalCastle.getTreasure());
-		statusBar.getChildren().addAll(informationCastle);
+		
+		castleInformation1 = new Text();
+		castleInformation1.setText("Bienvenue au royaume Dukes of the Realm qui compte "+castlesNormal.size()+" chateaux");
+		castleInformation2 = new Text();
+		imageView = new ImageView();
+		statusBar.getChildren().addAll(castleInformation1, imageView, castleInformation2);
 		statusBar.getStyleClass().add("statusBar");
 		statusBar.relocate(0, Settings.SCENE_HEIGHT);
 		statusBar.setPrefSize(Settings.SCENE_WIDTH, Settings.STATUS_BAR_HEIGHT);
 		root.getChildren().add(statusBar);
 	}	
 	
-	private void createCaste() {
-		
+	
+	// Fonction permettant de créer les chateaux du royaume
+	private void createNCastle(int number) {
+		int verif;
+		for(int i=0; i<number; i++) {
+			verif = 0;
+				
+			int x = rnd.nextInt(660) + Settings.CASTLE_DISTANCE;
+			int y = rnd.nextInt(460)+ Settings.CASTLE_DISTANCE;
+			
+			if(castlesNormal.size()>0) {
+				for(int j=0; j<castlesNormal.size(); j++) {
+					if( (x<=castlesNormal.get(j).getX()-normalCastleImage.getWidth()-Settings.CASTLE_DISTANCE || x>=castlesNormal.get(j).getX()+normalCastleImage.getWidth()+Settings.CASTLE_DISTANCE) || 
+						(y<=castlesNormal.get(j).getY()-normalCastleImage.getHeight()-Settings.CASTLE_DISTANCE || y>=castlesNormal.get(j).getY()+normalCastleImage.getHeight()+Settings.CASTLE_DISTANCE) ) 
+					{	verif++;	}	
+				}
+				// Si les coordonnées sont bonnes, on procéde à la création du chateau
+				if(verif == castlesNormal.size()) 
+					createCastle(x, y, normalCastleImage);
+				else
+					number++;
+			}
+			else
+				createCastle(x, y, userCastle);
+		}
+	}
+	
+	// Permet de créer un chateaux
+	private void createCastle(int x, int y, Image img) {
+			
 		NormalCastle normalCastle1;
-		
-		int x = rnd.nextInt(655) + Settings.BORDER_DISTANCE;
-		int y = rnd.nextInt(455)+ Settings.BORDER_DISTANCE;
-		
-		
 		Displacement displacement = new Displacement();
-		Production_Unit product = new Production_Unit(); 
-		
-		// Création du chateaux
-		normalCastle = new NormalCastle(normalCastleImage, playfieldLayer, x, y, 0.0, 1, null, product, displacement, null, input, null);
-		
+		Production_Unit product = new Production_Unit();
+			
+		normalCastle = new NormalCastle(img, playfieldLayer, x, y, 0.0, 1, null, product, displacement, null, input, null);
+			
 		normalCastle1 = normalCastle;
-//		if(castlesNormal.size()>0) {	
-//			for(int i=0; i<castlesNormal.size(); i++) {
-//				if(normalCastle.collidesWith(castlesNormal.get(i))) {
-//					System.out.println("Collision");
-//					if(normalCastle.getX()>=castlesNormal.get(i).getX() && normalCastle.getX()<=castlesNormal.get(i).getX()+normalCastleImage.getWidth()) {
-//						normalCastle.setX(x+normalCastleImage.getWidth()+Settings.CASTLE_DISTANCE);
-//					}
-//					
-//					if(normalCastle.getX()<castlesNormal.get(i).getX() && normalCastle.getX()+normalCastleImage.getWidth()>=castlesNormal.get(i).getX()  ) {
-//						normalCastle.setX(x-normalCastleImage.getWidth()-Settings.CASTLE_DISTANCE);
-//					}
-//					
-//					if(normalCastle.getY()>=castlesNormal.get(i).getY() && normalCastle.getY()<=castlesNormal.get(i).getY()+normalCastleImage.getHeight()) {
-//						normalCastle.setY(y+normalCastleImage.getHeight()+Settings.CASTLE_DISTANCE);
-//					}
-//					
-//					if(normalCastle.getY()<castlesNormal.get(i).getY() && normalCastle.getY()+normalCastleImage.getHeight()>=castlesNormal.get(i).getY()  ) {
-//						normalCastle.setY(y-normalCastleImage.getHeight()-Settings.CASTLE_DISTANCE);
-//					}
-//					
-//					i=0;
-//					
-//					System.out.println("Après la collision la valeur de i = "+i);
-//					
-//					normalCastle.updateUI();	
-//				}
-//			}
-//		}
-		
+			
 		createGate();	// Création de la porte du châteaux
 		createPlayer();	// Création du joueur propriétaire du chateaux ainsi que ses soldats
 		createSoldier();	// Création de la liste des soldats du châteaux
-		
+			
 		castlesNormal.add(normalCastle);		// Ajout du chateaux dans la liste de chateaux
-		
+			
 		normalCastle1.getView().setOnMousePressed(e -> {
-			clique = true;
+			NormalCastle nC = null;
 			normalCastle = normalCastle1;
-			System.out.println("Click on castle");
+			clique = true;
+				
+			// Pour lancer une attaque
+			if(attack && !"Duke1".equals(normalCastle.getDuke().getPlayerName())) {
+				clique = false;
+				attack = false;
+				//normalCastle = nC;
+				Pupup.display(normalCastle);
+			}
+				
+			if( "Duke1".equals(normalCastle.getDuke().getPlayerName()) ) {
+				attack = true;
+				//nC = normalCastle1;
+			}
+				
+			double i = e.getSceneX();
+			double j = e.getSceneY();
+//			System.out.println(i+","+j);
+//				if( i<normalCastle.getDuke().getX() && j<normalCastle.getDuke().getY() ) {
+//					double x1 = normalCastle.getDuke().getX()-1;
+//					double y1 = normalCastle.getDuke().getY()-1;
+//					
+//					while( (x1>i && y1>j) || (x1>i && y1==j) || (x1==i && y1>j) ) {
+//						//pause(20);
+//						if(x1>i && y1>j) {
+//							normalCastle.getDuke().setX(x1);
+//							normalCastle.getDuke().setY(y1);
+//							x1--; y1--;
+//						}
+//						else if(x1>i && y1==j) {
+//							normalCastle.getDuke().setX(x1);
+//							x1--;
+//						}
+//						else {
+//							normalCastle.getDuke().setY(y1);
+//							y1--;
+//						}
+//						normalCastle.getDuke().updateUI();
+//						
+//					}
+//				}
+				
+				//System.out.println("Click on castle");
 			e.consume();
 		});
+			
 	}
+	
+
 	
 	private void createPlayer() {
 		Player player;
@@ -221,20 +256,14 @@ public class Main extends Application {
 			String NameTmp = castlesNormal.get(castlesNormal.size()-1).getDuke().getPlayerName().substring(4);
 			x1 = Integer.parseInt(NameTmp)+1;
 		}
-		else
+		else {
 			x1 = 1;
+		}
 		
 		playerName = playerName+x1;
 		
 		player = new Player(playfieldLayer, playerImage, x, y, Settings.PLAYER_HEALTH, input, playerName);	
 		normalCastle.setDuke(player);	// Modification du propriétaire du chateaux;
-		
-//		player.getView().setOnMousePressed(e -> {
-//			clique = true;
-//			playerName1 = player.getPlayerName();
-//			System.out.println("Click on player");
-//			e.consume();
-//		});
 		
 	}
 	
@@ -278,10 +307,6 @@ public class Main extends Application {
 			}
 				
 		}
-//		System.out.println("Le nombre total de troupe = "+n);
-//		System.out.println("Le nombre de "+troop1+" = "+nbrePiquier);
-//		System.out.println("Le nombre de "+troop2+" = "+nbreChevalier);
-//		System.out.println("Le nombre de "+troop3+" = "+nbreOnagre);
 		
 		for(int i=0; i<nbrePiquier; i++) {
 			Soldier soldier = new Soldier(playfieldLayer, soldierImage, x-20, y, Settings.SOLDIER_HEALTH, Settings.SOLDIER_DAMAGE, troop1, Settings.SOLDIER_SPEED);
@@ -334,10 +359,23 @@ public class Main extends Application {
 	
 	private void update() {
 		if(clique) {
-			informationCastle.setText("Propriétaire: "+normalCastle.getDuke().getPlayerName()+"     Niveau: "+normalCastle.getLevel()+
-					"     Quantité de troupes: "+normalCastle.getListSoldier().size()+"     Tresor: "+normalCastle.getTreasure());
+			castleInformation1.setText("Propriétaire: "+normalCastle.getDuke().getPlayerName()+"     Niveau: "+normalCastle.getLevel()+
+					"     Quantité de troupes: "+normalCastle.getListSoldier().size()+"dont: "+normalCastle.nbreTypeSoldier("Piquier")+" Piquier, "+normalCastle.nbreTypeSoldier("Onage")+" Onagre" );
+			imageView.setImage(playerImage);
 		}
 	}
+	
+//	private void attack() {
+//		if(attack) {
+//			Alert alert = new Alert(AlertType.INFORMATION);
+//			alert.setTitle("Information Dialog");
+//			alert.setHeaderText(null);
+//			alert.setContentText("I have a great message for you!");
+//			
+//			alert.getOwner();
+//			alert.showAndWait();
+//		}
+//	}
 	
 	
 

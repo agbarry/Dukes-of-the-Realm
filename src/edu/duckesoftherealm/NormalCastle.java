@@ -7,6 +7,7 @@ import javafx.scene.layout.Pane;
 
 public class NormalCastle extends Castle {
 	
+	private Player duke;
 
 	/**
 	 * @param image
@@ -28,10 +29,6 @@ public class NormalCastle extends Castle {
 		super(image, layer, x, y, treasure, level, listSoldier, pUnit, moveOrder, gate, input);
 		this.duke = duke;
 	}
-
-	private Player duke;
-
-	
 
 	public Player getDuke() {
 		return duke;

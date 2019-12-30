@@ -84,6 +84,26 @@ public abstract class Castle extends Sprite {
 	public void setGate(Gate gate) {
 		this.gate = gate;
 	}
+	
+	// Permet d'avoir le nombre de soldat par type
+	public int nbreTypeSoldier(String name) {
+		int tmp = 0;
+		for(int i=0; i<listSoldier.size(); i++) {
+			if(name.equals("Piquier")) {
+				if(listSoldier.get(i).getTroopSoldier().equals(Troop.Piquier))
+					tmp++;
+			}
+			else if(name.equals("Chevalier")) {
+				if(listSoldier.get(i).getTroopSoldier().equals(Troop.Chevalier))
+					tmp++;
+			}
+			else {
+				if(listSoldier.get(i).getTroopSoldier().equals(Troop.Onagre))
+					tmp++;
+			}
+		}
+		return tmp;
+	}
 
 
 }

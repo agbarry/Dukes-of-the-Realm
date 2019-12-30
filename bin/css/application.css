@@ -1,4 +1,5 @@
 .statusBar {
+	-fx-font: 100px Tahoma;
     -fx-background-color: #11a888;
     -fx-padding: 8px 40px;
     -fx-border-color: black;

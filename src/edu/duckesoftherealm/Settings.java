@@ -15,8 +15,7 @@ public class Settings {
     public static final int    SOLDIER_HEALTH = 3;
     public static final double SOLDIER_DAMAGE = 1;
     
-    public static final int CASTLE_DISTANCE = 20;
-    public static final int BORDER_DISTANCE = 10;
+    public static final int CASTLE_DISTANCE = 40;
     
 
     /*public static final double MISSILE_SPEED = 4.0;

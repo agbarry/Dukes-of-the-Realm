@@ -35,6 +35,15 @@ public class Player extends Sprite {
 	public void setPlayerName(String playerName) {
 		this.playerName = playerName;
 	}
+	
+	public static void manySec(long s) {
+	    try {
+	      Thread.currentThread().sleep(s * 1000);
+	      }
+	    catch (InterruptedException e) {
+	      e.printStackTrace();
+	      }
+}
 
 	@Override
 	public void checkRemovability() {

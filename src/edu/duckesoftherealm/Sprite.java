@@ -13,8 +13,8 @@ public abstract class Sprite {
     protected double x;	// La position x de l'image
     protected double y;	// La position y de l'image
 
-    /*protected double dx;
-    protected double dy; */
+    protected double dx;
+    protected double dy; 
 
     private boolean removable = false;
 
@@ -71,10 +71,6 @@ public abstract class Sprite {
         return imageView;
     }
 
-    public void updateUI() {
-        imageView.relocate(x, y);
-    }
-
     public double getWidth() {
         return w;
     }
@@ -89,6 +85,31 @@ public abstract class Sprite {
 
     public double getCenterY() {
         return y + h * 0.5;
+    }
+    
+    public double getDx() {
+		return dx;
+	}
+
+	public void setDx(double dx) {
+		this.dx = dx;
+	}
+
+	public double getDy() {
+		return dy;
+	}
+
+	public void setDy(double dy) {
+		this.dy = dy;
+	}
+
+	public void updateUI() {
+        imageView.relocate(x, y);
+    }
+    
+    public void move() {
+        x -= dx;
+        y -= dy;
     }
 
     // TODO: per-pixel-collision

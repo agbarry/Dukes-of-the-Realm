@@ -100,8 +100,31 @@ public class NormalCastle extends Castle {
 					break;
 				}
 			}
+		}	
+	}
+
+	@Override
+	public void extractSoldiersToDeploy(ArrayList<Soldier> soldiers, int piker, int knight, int onager) {
+		int verif1 = 0, verif2 = 0, verif3 = 0, i=0;
+		while(i<this.getListSoldier().size()) {
+			if( this.getListSoldier().get(i).getTroopSoldier().equals(Troop.Piquier) && verif1<piker ) {
+				soldiers.add((Soldier) this.getListSoldier().get(i));
+				verif1++;
+				this.getListSoldier().remove(i);
+			}
+			else if (this.getListSoldier().get(i).getTroopSoldier().equals(Troop.Chevalier) && verif2<knight ) {
+				soldiers.add((Soldier) this.getListSoldier().get(i));
+				verif2++;
+				this.getListSoldier().remove(i);
+			}
+			else if(this.getListSoldier().get(i).getTroopSoldier().equals(Troop.Onagre) && verif3<onager ) {
+				soldiers.add((Soldier) this.getListSoldier().get(i));
+				verif3++;
+				this.getListSoldier().remove(i);
+			}
+			else
+				i++;
 		}
-		
 	}
 
 }

@@ -87,6 +87,12 @@ public class NeutralCastle extends Castle {
 		}
 		
 	}
+
+	@Override
+	public void extractSoldiersToDeploy(ArrayList<Soldier> soldiers, int piker, int knight, int onager) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 
 }

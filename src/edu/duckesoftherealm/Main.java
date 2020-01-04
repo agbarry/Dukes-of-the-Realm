@@ -47,14 +47,11 @@ public class Main extends Application {
 	private NeutralCastle neutralCastle;	// Pour instancier les chateaux neutres
 	private Campaign campaign;	// Pour instancier les campagnes
 	
-	//private Displacement castleDisplacement;	// Pour l'ordre de déplacement d'un chateaux
-	
 	private ArrayList<NormalCastle> normalCastles = new ArrayList<>(); // Pour stocker tous les chateaux du royaume
 	private ArrayList<NeutralCastle> neutralCastles = new ArrayList<>(); // Pour stocker les chateaux neutres du royaume
 	private ArrayList<Campaign> campaigns = new ArrayList<>(); // Pour stocker les campagnes du royaume
 	
 	private ArrayList<Soldier> soldiersToDeploy = new ArrayList<>();	// Pour stocker les soldats à déployer lors d'une attaque
-	
 	
 	private boolean cliqueNormal = false; // Pour le clique sur les chateaux par défaut
 	private boolean cliqueNeutral = false; // Pour le clique sur les chateaux neutres;
@@ -68,7 +65,6 @@ public class Main extends Application {
 	private Input input;
 	private Text castleInformation1;	// Pour l'affichage des informations des chateaux sur la barre de status
 	private AnimationTimer gameLoop;
-	
 	
 	Group root;
 
@@ -168,7 +164,6 @@ public class Main extends Application {
 	    AnchorPane.setLeftAnchor(vBox, Settings.VBOX_X);
 
 		root.getChildren().add(anchorPane);
-		
 	}
 	
 	private void loadGame() {
@@ -505,7 +500,6 @@ public class Main extends Application {
 	}
 	
 	
-
 	public static void main(String[] args) {
 		launch(args);
 	}

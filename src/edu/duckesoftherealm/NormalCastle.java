@@ -72,4 +72,36 @@ public class NormalCastle extends Castle {
 		
 	}
 
+	@Override
+	public void attack(ArrayList<NormalCastle> castles, ArrayList<Soldier> soldiers) {
+		if(soldiers.size()>0) {
+			// Modification de l'ordre de déplacement du chateaux de l'utilisateur
+			castles.get(0).getMoveOrder().setTargetX(this.getView().getLayoutX());
+			castles.get(0).getMoveOrder().setTargetY(this.getView().getLayoutY());
+			castles.get(0).getMoveOrder().setNumberTroop(soldiers.size());
+			
+			int pos = rnd.nextInt(this.getListSoldier().size());
+			while(soldiers.size()>0) {
+				this.damagedBy(soldiers.get(0), pos);
+				if( !soldiers.get(0).isApplicated() ) {
+					soldiers.get(0).removeFromLayer();
+					soldiers.remove(0);
+				}
+				
+				if( !this.getListSoldier().get(pos).isAlive() ) {
+					this.getListSoldier().get(pos).removeFromLayer();
+					this.getListSoldier().remove(pos);
+					if(this.getListSoldier().size()>0)
+						pos = rnd.nextInt(this.getListSoldier().size());
+				}
+				
+				if(this.getListSoldier().size()==0) {	// Si la liste des soldats du chateaux attaqué est non null
+					this.setDuke(castles.get(0).getDuke());
+					break;
+				}
+			}
+		}
+		
+	}
+
 }

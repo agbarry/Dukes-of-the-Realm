@@ -7,6 +7,16 @@ public class Settings {
     public static final double SCENE_HEIGHT = 620;
 	public static final double STATUS_BAR_HEIGHT = 60;
 	
+	public static final int MIN_NUMBER_NORMALCASTLE = 4;
+	public static final int MEDIUM_NUMBER_NORMALCASTLE = 8;
+	
+	public static final int MIN_NUMBER_NEUTRALCASTLE = 2;
+	public static final int MEDIUM_NUMBER_NEUTRALCASTLE = 6;
+	
+	public static final int MIN_NUMBER_CAMPAIGN = 5;
+	public static final int MEDIUM_NUMBER_CAMPAIGN = 10;
+	
+	
 	// The properties of pikemen
 	public static final double PIKER_PRODUCTIONCOST = 100;
 	public static final int    PIKER_PRODUCTIONTIME = 5;

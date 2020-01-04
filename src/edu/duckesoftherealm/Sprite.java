@@ -67,7 +67,7 @@ public abstract class Sprite {
     }
 
 
-    protected ImageView getView() {
+    public ImageView getView() {
         return imageView;
     }
 

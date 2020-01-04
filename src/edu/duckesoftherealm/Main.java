@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import java.util.Random;
 
+import edu.duckesoftherealm.controller.ScrollPaneController;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -39,6 +40,8 @@ public class Main extends Application {
 	private Image soldierImage;		  // Pour représenter les soldats
 	private Image gateImage;		  // Pour représenter les portes
 	private Image campaignImage;	  // Pour représenter les zones libres
+	
+	private Player player;	// Pour instancier les ducs des chateaux
 
 	private NormalCastle normalCastle;	// Pour instancier les chateaux par défaut
 	private NeutralCastle neutralCastle;	// Pour instancier les chateaux neutres
@@ -63,8 +66,9 @@ public class Main extends Application {
 
 	private Scene scene;
 	private Input input;
-	private AnimationTimer gameLoop;
 	private Text castleInformation1;	// Pour l'affichage des informations des chateaux sur la barre de status
+	private AnimationTimer gameLoop;
+	
 	
 	Group root;
 
@@ -101,9 +105,8 @@ public class Main extends Application {
 		buttonNew.setOnAction(e ->  {
 	    	
 	    	root.getChildren().clear();
-	    	//primaryStage.setResizable(true);
 			playfieldLayer = new Pane();
-			root.getChildren().add(playfieldLayer);
+			root.getChildren().add(playfieldLayer); 
 			
 			loadGame(); // Pour le chargement du jeu.
 			
@@ -111,7 +114,7 @@ public class Main extends Application {
 				@Override
 				public void handle(long now) {
 					processInput(input, now);
-			
+					
 					// soldat movement
 					soldiersToDeploy.forEach(sprite -> sprite.spriteMove(normalCastles.get(0).getMoveOrder().getTargetX(), normalCastles.get(0).getMoveOrder().getTargetY()));
 					
@@ -127,6 +130,8 @@ public class Main extends Application {
 						Platform.exit();
 						System.exit(0);
 					} 
+					
+					ScrollPaneController.Mouvement(input, scrollPane);
 				}
 
 			};
@@ -151,7 +156,10 @@ public class Main extends Application {
 	    buttonQuit.setPrefWidth(Settings.DEFAULT_BUTTON_WIDTH);
 	    buttonQuit.setPrefHeight(Settings.DEFAULT_BUTTON_HEIGHT);
 	    buttonQuit.setDefaultButton(true);
-	    buttonQuit.setOnAction(action -> primaryStage.close());
+	    buttonQuit.setOnAction(action -> {
+	    	Platform.exit();
+			System.exit(0);
+	    });
 	    
 	    vBox.getChildren().addAll(buttonNew, buttonRestart, buttonAbout, buttonQuit);
 	    
@@ -179,13 +187,13 @@ public class Main extends Application {
 		input = new Input(scene);
 		input.addListeners();
 		
-		int number = rnd.nextInt(5)+5;
+		int number = rnd.nextInt(Settings.MEDIUM_NUMBER_NORMALCASTLE)+Settings.MIN_NUMBER_NORMALCASTLE;
 		createNCastle(number, true);
 		
-		number = rnd.nextInt(4)+2;
+		number = rnd.nextInt(Settings.MEDIUM_NUMBER_NEUTRALCASTLE)+Settings.MIN_NUMBER_NEUTRALCASTLE;
 		createNCastle(number, false);
 			
-		number = rnd.nextInt(10)+5;
+		number = rnd.nextInt(Settings.MEDIUM_NUMBER_CAMPAIGN)+Settings.MIN_NUMBER_CAMPAIGN;
 		createCampaign(number);
 	
 		createStatusBar();	
@@ -196,13 +204,12 @@ public class Main extends Application {
 		HBox statusBar = new HBox();
 		
 		castleInformation1 = new Text();
-		castleInformation1.setText("Bienvenue au royaume 'Dukes of the Realm' qui compte "+normalCastles.size()+" chateaux");
+		castleInformation1.setText("Bienvenue au royaume 'Dukes of the Realm' qui compte "+normalCastles.size()+" chateaux d'origine et "+neutralCastles.size()+" chateaux neutres");
 		
 		statusBar.getChildren().addAll(castleInformation1);
 		statusBar.getStyleClass().add("statusBar");
-		statusBar.relocate(0, Settings.SCENE_HEIGHT);
-		statusBar.setPrefSize(scene.getWidth(), Settings.STATUS_BAR_HEIGHT);
-		statusBar.setMaxSize(scene.getWidth(), Settings.STATUS_BAR_HEIGHT);
+		statusBar.relocate(0, playfieldLayer.getHeight()+Settings.SPRITE_DISTANCE);
+		statusBar.setPrefSize(playfieldLayer.getWidth(), Settings.STATUS_BAR_HEIGHT);
 		statusBar.setAlignment(Pos.CENTER);
 		root.getChildren().add(statusBar);
 	}	
@@ -214,7 +221,7 @@ public class Main extends Application {
 			verif = 0;
 				
 			int x = rnd.nextInt((int) scene.getWidth()) + Settings.SPRITE_DISTANCE;
-			int y = rnd.nextInt(460)+ Settings.SPRITE_DISTANCE;
+			int y = rnd.nextInt((int) scene.getHeight())+ Settings.SPRITE_DISTANCE;
 			
 			if(normalCastles.size()>0) {
 				for(int j=0; j<normalCastles.size(); j++) {
@@ -244,59 +251,27 @@ public class Main extends Application {
 	
 	// Méthode permettant de créer un chateaux
 	private void createCastle(int x, int y, Image img, boolean whichCastle) {
-		
 		if(whichCastle) {
 			NormalCastle normalCastle1;
 			Displacement displacement = new Displacement();
 			Production_Unit product = new Production_Unit();
-				
 			normalCastle = new NormalCastle(img, playfieldLayer, x, y, 0.0, 1, null, null, input, null, product, displacement);
 				
 			createGate(whichCastle);	// Création de la porte du châteaux
 			createPlayer();	// Création du joueur propriétaire du chateaux ainsi que ses soldats
 			createSoldier(whichCastle);	// Création de la liste des soldats du châteaux
 				
-			normalCastles.add(normalCastle);		// Ajout du chateaux dans la liste de chateaux
+			normalCastles.add(normalCastle);	// Ajout du chateaux dans la liste de chateaux
 			normalCastle1 = normalCastle;
 			
 			normalCastle1.getView().setOnMousePressed(e -> {
 				normalCastle = normalCastle1; cliqueNormal = true; cliqueNeutral = false;
 					
-				// Pour lancer une attaque
-				if(attack && !"Duke1".equals(normalCastle.getDuke().getPlayerName())) {
-					
+				if(attack && !"Duke1".equals(normalCastle.getDuke().getPlayerName())) {	// Pour lancer une attaque
 					cliqueNormal = false; attack = false;
 					if(normalCastles.get(0).getListSoldier().size()>0) {
-						
-						soldiersToDeploy = Pupup.display(normalCastles.get(0));
-						if(soldiersToDeploy.size()>0) {
-							// Modification de l'ordre de déplacement du chateaux de l'utilisateur
-							normalCastles.get(0).getMoveOrder().setTargetX(normalCastle.getView().getLayoutX());
-							normalCastles.get(0).getMoveOrder().setTargetY(normalCastle.getView().getLayoutY());
-							normalCastles.get(0).getMoveOrder().setNumberTroop(soldiersToDeploy.size());
-							
-							int pos = rnd.nextInt(normalCastle.getListSoldier().size());
-							while(soldiersToDeploy.size()>0) {
-								normalCastle.damagedBy(soldiersToDeploy.get(0), pos);
-								if( !soldiersToDeploy.get(0).isApplicated() ) {
-									soldiersToDeploy.get(0).removeFromLayer();
-									soldiersToDeploy.remove(0);
-								}
-								
-								if( !normalCastle.getListSoldier().get(pos).isAlive() ) {
-									normalCastle.getListSoldier().get(pos).removeFromLayer();
-									normalCastle.getListSoldier().remove(pos);
-									if(normalCastle.getListSoldier().size()>0)
-										pos = rnd.nextInt(normalCastle.getListSoldier().size());
-								}
-								
-								if(normalCastle.getListSoldier().size()==0) {	// Si la liste des soldats du chateaux attaqué est non null
-									normalCastle.setDuke(normalCastles.get(0).getDuke());
-									break;
-									
-								}
-							}
-						}
+						soldiersToDeploy = Pupup.display(normalCastles.get(0));	// Récupération des soldats à déployer
+						normalCastle.attack(normalCastles, soldiersToDeploy);	// Attack du chateaux cible
 					}
 					else {
 						Dialog.infoAlert("Désolé, vous n'avez pas d'armée dans votre reserve.", "Information");
@@ -313,37 +288,37 @@ public class Main extends Application {
 		else {
 			NeutralCastle neutralCastle1;
 			neutralCastle = new NeutralCastle(img, playfieldLayer, x, y, 0.0, 1, null, null, input, "Baron");
-			
 			createGate(whichCastle);	// Création de la porte du châteaux
 			createSoldier(whichCastle);	// Création de la liste des soldats du châteaux
 			
-			neutralCastle1 = neutralCastle;
-				
 			neutralCastles.add(neutralCastle);		// Ajout du chateaux dans la liste de chateaux
+			neutralCastle1 = neutralCastle;
 			
 			neutralCastle1.getView().setOnMousePressed(e -> {
-				neutralCastle = neutralCastle1;
-				cliqueNeutral = true;
-				cliqueNormal = false;
-					
-				// Pour lancer une attaque
-				if(attack && !"Duke1".equals(neutralCastle.getBaronName())) {
-					cliqueNeutral = false;
-					attack = false;
-					soldiersToDeploy = Pupup.display(normalCastles.get(0));
+				neutralCastle = neutralCastle1; cliqueNeutral = true; cliqueNormal = false;
+				if(attack && !"Duke1".equals(neutralCastle.getBaronName())) {	// Pour lancer une attaque
+					cliqueNeutral = false; attack = false;
+					if(normalCastles.get(0).getListSoldier().size()>0) {
+						soldiersToDeploy = Pupup.display(normalCastles.get(0));
+						neutralCastle.attack(normalCastles, soldiersToDeploy);	// Attack du chateaux cible
+					}
+					else {
+						Dialog.infoAlert("Désolé, vous n'avez pas d'armée dans votre reserve.", "Information");
+					}
+				}
+				
+				if( "Duke1".equals(neutralCastle.getBaronName()) ) {
+					attack = true;
 				}
 				
 				e.consume();
 			});
-		}
-			
+		}	
 	}
 	
 	// Méthode permettant de créer un joueur
 	private void createPlayer() {
-		Player player;
 		String playerName = "Duke";
-		
 		double x = normalCastle.getCenterX();
 		double y = normalCastle.getCenterY();
 		
@@ -355,17 +330,14 @@ public class Main extends Application {
 		else {
 			x1 = 1;
 		}
-		
 		playerName = playerName+x1;
 		
 		player = new Player(playfieldLayer, playerImage, x, y, Settings.PLAYER_HEALTH, input, playerName);	
 		normalCastle.setDuke(player);	// Modification du propriétaire du chateaux;
-		
 	}
 	
 	// Méthode permettant de créer la liste des soldats
 	private void createSoldier(boolean forWhichCastle) {
-		
 		ArrayList<Soldier> soldiers = new ArrayList<>();
 		
 		double x, y;
@@ -437,7 +409,6 @@ public class Main extends Application {
 	
 	// Permet de créer la porte d'un chateaux
 	private void createGate(boolean forWhichCastle) {
-		
 		Gate gate;	// Pour extencier un objet de type porte
 		
 		double x, y, width, height;
@@ -455,7 +426,6 @@ public class Main extends Application {
 		}
 		
 		double gateX,gateY;
-		
 		int n = rnd.nextInt(4)+1;
 		if(n==1) {	// Pour mettre la porte vers le nord
 			gateX = x+(width/2)-(gateImage.getWidth()/2);

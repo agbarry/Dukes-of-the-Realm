@@ -107,5 +107,7 @@ public abstract class Castle extends Sprite {
 			soldier.applicat();
 		}
 	}
+	
+	public abstract void attack(ArrayList<NormalCastle> castles, ArrayList<Soldier> soldiers);
 
 }

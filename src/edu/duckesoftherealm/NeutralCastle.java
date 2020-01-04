@@ -24,16 +24,14 @@ public class NeutralCastle extends Castle {
 	 * @param treasure
 	 * @param level
 	 * @param listSoldier
-	 * @param pUnit
-	 * @param moveOrder
 	 * @param gate
 	 * @param input
 	 * @param baronName
 	 */
 	public NeutralCastle(Image image, Pane layer, double x, double y, double treasure, int level,
-			ArrayList<Soldier> listSoldier, Production_Unit pUnit, Displacement moveOrder, Gate gate, Input input,
-			String baronName) {
-		super(image, layer, x, y, treasure, level, listSoldier, pUnit, moveOrder, gate, input);
+			ArrayList<Soldier> listSoldier, Gate gate, Input input, String baronName) {
+		
+		super(image, layer, x, y, treasure, level, listSoldier, gate, input);
 		this.baronName = baronName;
 	}
 
@@ -47,6 +45,12 @@ public class NeutralCastle extends Castle {
 
 	@Override
 	public void checkRemovability() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void spriteMove(double x, double y) {
 		// TODO Auto-generated method stub
 		
 	}

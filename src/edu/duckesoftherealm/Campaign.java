@@ -3,19 +3,10 @@ package edu.duckesoftherealm;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 
+public class Campaign extends Sprite {
 
-// Pour la gestion de la porte
-public class Gate extends Sprite {
-    
-	/**
-	 * @param imageView
-	 * @param layer
-	 * @param gateX
-	 * @param gateY
-	 */
-	public Gate(Image image, Pane layer, double gateX, double gateY) {
-		
-		super(layer, image, gateX, gateY);
+	public Campaign(Pane layer, Image image, double x, double y) {
+		super(layer, image, x, y);
 	}
 
 	@Override
@@ -30,13 +21,4 @@ public class Gate extends Sprite {
 		
 	}
 	
-	
-	
-	
-    
-    
-	
-    
-    
-
 }

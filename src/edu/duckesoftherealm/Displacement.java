@@ -8,8 +8,8 @@ package edu.duckesoftherealm;
  *
  */
 public class Displacement {
-	private int targetX;	// Cordonnée x de la cible
-	private int targetY;	// Coordonnée y de la cible
+	private double targetX;	// Cordonnée x de la cible
+	private double targetY;	// Coordonnée y de la cible
 	// A completer après
 	private int numberTroop;
 	
@@ -18,31 +18,34 @@ public class Displacement {
 		super();
 	}
 
-	public Displacement(int targetX, int targetY, int numberTroop) {
+	public Displacement(double targetX, double targetY, int numberTroop) {
 		this.targetX = targetX;
 		this.targetY = targetY;
 		this.numberTroop = numberTroop;
 	}
 	
-	public void setTargetX(int targetX) {
+	public void setTargetX(double targetX) {
 		this.targetX = targetX;
 	}
 	
-	public void setTargetY(int targetY) {
+	public void setTargetY(double targetY) {
 		this.targetY = targetY;
 	}
 	
+	public double getTargetX() {
+		return targetX;
+	}
+
+	public double getTargetY() {
+		return targetY;
+	}
+
 	public int getNumberTroop() {
 		return numberTroop;
 	}
 
 	public void setNumberTroop(int numberTroop) {
 		this.numberTroop = numberTroop;
-	}
-
-	@Override
-	public String toString() {
-		return "Displacement [targetX=" + targetX + ", targetY=" + targetY + ", toString()=" + super.toString() + "]";
 	}
 	
 

@@ -108,8 +108,8 @@ public abstract class Sprite {
     }
     
     public void move() {
-        x -= dx;
-        y -= dy;
+        x += dx;
+        y += dy;
     }
 
     // TODO: per-pixel-collision
@@ -120,6 +120,9 @@ public abstract class Sprite {
     public void remove() {
         this.removable = true;
     }
+    
+    
+    public abstract void spriteMove(double x, double y);
 
     public abstract void checkRemovability();
 

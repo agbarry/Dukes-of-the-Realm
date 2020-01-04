@@ -9,7 +9,6 @@ public class Player extends Sprite {
 	@SuppressWarnings("unused")
 	private Input input;	// Variable pour les interactions
 	private String playerName;	// Le nom du joueur
-	
 
 	public Player(Pane layer, Image image, double x, double y, int health, Input input, String playerName) {
 		
@@ -35,18 +34,15 @@ public class Player extends Sprite {
 	public void setPlayerName(String playerName) {
 		this.playerName = playerName;
 	}
-	
-	public static void manySec(long s) {
-	    try {
-	      Thread.currentThread().sleep(s * 1000);
-	      }
-	    catch (InterruptedException e) {
-	      e.printStackTrace();
-	      }
-}
 
 	@Override
 	public void checkRemovability() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void spriteMove(double x, double y) {
 		// TODO Auto-generated method stub
 		
 	}

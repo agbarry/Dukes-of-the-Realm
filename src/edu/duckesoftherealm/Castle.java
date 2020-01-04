@@ -4,6 +4,7 @@
 package edu.duckesoftherealm;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
@@ -15,21 +16,20 @@ import javafx.scene.layout.Pane;
 public abstract class Castle extends Sprite {
 	
 	// Variable de classe pour compter le nombre de chateaux crées dans le jeu
+	Random rnd = new Random();
 	private static int nbreInstances = 0;
     
     private double treasure;	// Le tresor du chateaux
     private int level;		// Le niveau du chateaux
     
-    protected ArrayList<Soldier> listSoldier;	// La liste de soldat
-    protected Production_Unit pUnit;	// L'unité de production
-    private Displacement moveOrder;	// Ordre de déplacement 
+    protected ArrayList<Soldier> listSoldier;	// La liste de soldat 
     private Gate gate;	// Pour la porte du chateaux
     @SuppressWarnings("unused")
 	private Input input; // Pour les interactions avec les chateaux
     
     
     public Castle(Image image, Pane layer, double x, double y, double treasure, int level,
-			ArrayList<Soldier> listSoldier, Production_Unit pUnit, Displacement moveOrder, Gate gate, Input input) {
+			ArrayList<Soldier> listSoldier, Gate gate, Input input) {
     
     	super(layer, image, x, y);
 		
@@ -37,8 +37,6 @@ public abstract class Castle extends Sprite {
 		this.level = level;
 		
 		this.listSoldier = listSoldier;
-		this.pUnit = pUnit;
-		this.moveOrder = moveOrder;
 		
 		this.gate = gate;
 		this.input = input;
@@ -68,13 +66,6 @@ public abstract class Castle extends Sprite {
 		this.listSoldier = listSoldier;
 	}
 
-	public Production_Unit getpUnit() {
-		return pUnit;
-	}
-
-	public Displacement getMoveOrder() {
-		return moveOrder;
-	}
 	
 	public Gate getGate() {
 		return gate;
@@ -88,22 +79,33 @@ public abstract class Castle extends Sprite {
 	// Permet d'avoir le nombre de soldat par type
 	public int nbreTypeSoldier(String name) {
 		int tmp = 0;
-		for(int i=0; i<listSoldier.size(); i++) {
-			if(name.equals("Piquier")) {
+		if(name.equals("Piquier")) {
+			for(int i=0; i<listSoldier.size(); i++) {
 				if(listSoldier.get(i).getTroopSoldier().equals(Troop.Piquier))
 					tmp++;
 			}
-			else if(name.equals("Chevalier")) {
+		}
+		else if(name.equals("Chevalier")) {
+			for(int i=0; i<listSoldier.size(); i++) {
 				if(listSoldier.get(i).getTroopSoldier().equals(Troop.Chevalier))
 					tmp++;
 			}
-			else {
+		}
+		else {
+			for(int i=0; i<listSoldier.size(); i++) {
 				if(listSoldier.get(i).getTroopSoldier().equals(Troop.Onagre))
 					tmp++;
 			}
 		}
+
 		return tmp;
 	}
 
+	public void damagedBy(Soldier soldier, int pos) {
+		while(soldier.isApplicated() && this.listSoldier.get(pos).isAlive() ) {
+			this.listSoldier.get(pos).damaged();
+			soldier.applicat();
+		}
+	}
 
 }

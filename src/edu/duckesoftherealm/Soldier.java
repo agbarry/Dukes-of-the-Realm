@@ -13,67 +13,52 @@ import javafx.scene.layout.Pane;
 public class Soldier extends Sprite {
 	
 	private int health;	// Le nombre de vie du soldat
-    private double damage;	// Le point de dégat du soldat
-	private Troop troopSoldier;	// Le type de troupe du soldat
+    private int damage;	// Le point de dégat du soldat
 	private double speed;		// La vitesse du soldat
+	private Troop troopSoldier;	// Le type de troupe du soldat
 	
-	
-	public Soldier(Pane layer, Image image, double x, double y, int health, double damage, Troop troopSoldier, double speed) {
-		
+	public Soldier(Pane layer, Image image, double x, double y, Troop troopSoldier) {
 		super(layer, image, x, y);
 		
-		this.health = health;
-        this.damage = damage;
+		this.health = troopSoldier.getHealth();
+        this.damage = troopSoldier.getDammage();
+        this.speed = troopSoldier.getSpeed();
         
 		this.troopSoldier = troopSoldier;
-		this.speed = speed;
+		
 	}
-	
 
 	public int getHealth() {
 		return health;
 	}
 
-
 	public void setHealth(int health) {
 		this.health = health;
 	}
 
-
-	public double getDamage() {
+	public int getDamage() {
 		return damage;
 	}
 
-
-	public void setDamage(double damage) {
+	public void setDamage(int damage) {
 		this.damage = damage;
-	}
-
-
-	public void setTroopSoldier(Troop troopSoldier) {
-		this.troopSoldier = troopSoldier;
-	}
-
-
-	public void setSpeed(double speed) {
-		this.speed = speed;
-	}
-
-
-	public Troop getTroopSoldier() {
-		return troopSoldier;
 	}
 
 	public double getSpeed() {
 		return speed;
 	}
 
-
-	@Override
-	public String toString() {
-		return "Soldier [troopSoldier=" + troopSoldier + ", speed=" + speed + "]";
+	public void setSpeed(double speed) {
+		this.speed = speed;
 	}
 
+	public void setTroopSoldier(Troop troopSoldier) {
+		this.troopSoldier = troopSoldier;
+	}
+
+	public Troop getTroopSoldier() {
+		return troopSoldier;
+	}
 
 	@Override
 	public void checkRemovability() {
@@ -81,8 +66,36 @@ public class Soldier extends Sprite {
 		
 	}
 	
+	public boolean isAlive() {
+        return health > 0;
+    }
+	
+	public boolean isApplicated() {
+		return  damage > 0;
+	}
+
+	@Override
+	public void spriteMove(double cibleX, double cibleY) {
+		if(this.x<cibleX)
+			this.x += dx;
+		else
+			this.x -= dx;
+		
+		if(this.y<cibleY)
+			this.y += dy;
+		else
+			this.y -= dy;
+		
+	}
+	
+	public void applicat() {
+		this.setDamage(this.getDamage()-1);
+	}
 	
 	
+	public void damaged() {
+		this.setHealth(this.getHealth()-1);
+	}
 	
 	
 }

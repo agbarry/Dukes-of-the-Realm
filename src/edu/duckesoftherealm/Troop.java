@@ -10,17 +10,17 @@ package edu.duckesoftherealm;
 public enum Troop {
 	
 	// Le troupes possibles
-	Piquier(100, 5, 2, 1, 1),
-	Chevalier(500, 20, 6, 3, 5),
-	Onagre(1000, 50, 1, 5, 10);
+	Piquier(Settings.PIKER_PRODUCTIONCOST, Settings.PIKER_PRODUCTIONTIME, Settings.PIKER_SPEED, Settings.PIKER_HEALTH, Settings.PIKER_DAMAGE),
+	Chevalier(Settings.KNIGHT_PRODUCTIONCOST, Settings.KNIGHT_PRODUCTIONTIME, Settings.KNIGHT_SPEED, Settings.KNIGHT_HEALTH, Settings.KNIGHT_DAMAGE),
+	Onagre(Settings.ONAGER_PRODUCTIONCOST, Settings.ONAGER_PRODUCTIONTIME, Settings.ONAGER_SPEED, Settings.ONAGER_HEALTH, Settings.ONAGER_DAMAGE);
 	
-	private int productionCost;
+	private double productionCost;
 	private int productionTime;
-	private int speed;
+	private double speed;
 	private int health;
 	private int dammage;
 	
-	Troop(int pC, int pT, int s, int h, int d) {
+	Troop(double pC, int pT, double s, int h, int d) {
 		productionCost = pC;
 		productionTime = pT;
 		speed = s;
@@ -28,7 +28,7 @@ public enum Troop {
 		dammage = d;
 	}
 
-	public int getProductionCost() {
+	public double getProductionCost() {
 		return productionCost;
 	}
 
@@ -36,7 +36,7 @@ public enum Troop {
 		return productionTime;
 	}
 
-	public int getSpeed() {
+	public double getSpeed() {
 		return speed;
 	}
 
@@ -46,5 +46,25 @@ public enum Troop {
 
 	public int getDammage() {
 		return dammage;
+	}
+
+	public void setProductionCost(double productionCost) {
+		this.productionCost = productionCost;
+	}
+
+	public void setProductionTime(int productionTime) {
+		this.productionTime = productionTime;
+	}
+
+	public void setSpeed(double speed) {
+		this.speed = speed;
+	}
+
+	public void setHealth(int health) {
+		this.health = health;
+	}
+
+	public void setDammage(int dammage) {
+		this.dammage = dammage;
 	}
 }

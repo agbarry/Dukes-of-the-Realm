@@ -1,17 +1,20 @@
 package edu.duckesoftherealm;
 
+import edu.duckesoftherealm.controller.PupupController;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -31,7 +34,7 @@ public class Other {
         alert.showAndWait();
     }
     
-    public static void ContextMenuPlayer(ImageView img, double x, double y) {
+    public static void ContextMenuPlayer(NormalCastle nC, ImageView img, double x, double y) {
 		
 		ContextMenu contextMenu = new ContextMenu();
 		
@@ -48,6 +51,7 @@ public class Other {
 		addProduction.setOnAction(evt -> {
 			Stage popupwindow=new Stage();    
 		    popupwindow.initModality(Modality.APPLICATION_MODAL);
+		    popupwindow.setResizable(false);
 		    popupwindow.setTitle("Ajout de production"); 
 		    
 		    FlowPane root = new FlowPane();
@@ -62,25 +66,90 @@ public class Other {
 		    text3.setPromptText("Nombre d'onagre");
 		    text3.setPrefWidth(160);
 		    
-		    Button button1= new Button("Valider");
-		    button1.setDefaultButton(true);
+		    Label label = new Label("");
+		    label.setPrefHeight(60);
+		    label.setTextFill(Color.RED);
 		    
-		    Button button2 = new Button("Annuler");
-		    button2.setDefaultButton(true);
-		    button2.setOnAction(e -> popupwindow.close());
+		    Label label1 = new Label("			Vous avez:  "+nC.getTreasure()+" florins");
+		    label1.setPrefHeight(60);
+		    
+		    Button buttonValidate= new Button("Valider");
+		    buttonValidate.setDefaultButton(true);
+		    buttonValidate.setOnAction(action -> {
+		    	// Si les données saisi par le joueur sont bonnes on procéde à la constitution des soldats à déployer
+		    	if( PupupController.controlBeforeProduct(text1, text2, text3, nC, label) ) {	
+		    		int nPiker = Integer.parseInt(text1.getText());
+		    		int nKnight = Integer.parseInt(text2.getText());
+		    		int nOnager = Integer.parseInt(text3.getText());
+		    		
+		    		Production_Unit pUnit;
+		    		
+		    		for(int i=0; i<nPiker; i++) {
+		    			pUnit = new Production_Unit(Troop.Piquier, Troop.Piquier.getProductionTime());
+		    			nC.getlPUnit().add(pUnit);
+		    		}
+		    		
+		    		for(int i=0; i<nKnight; i++) {
+		    			pUnit = new Production_Unit(Troop.Chevalier, Troop.Chevalier.getProductionTime());
+		    			nC.getlPUnit().add(pUnit);
+		    		}
+		    		
+		    		for(int i=0; i<nOnager; i++) {
+		    			pUnit = new Production_Unit(Troop.Onagre, Troop.Onagre.getProductionTime());
+		    			nC.getlPUnit().add(pUnit);
+		    		}
+		    		
+					popupwindow.close();
+		    	}
+		    	
+		    });
+		    
+		    Button buttonCancel = new Button("Annuler");
+		    buttonCancel.setDefaultButton(true);
+		    buttonCancel.setOnAction(e -> popupwindow.close());
 		     
 		    root.setPadding(new Insets(20));
 	        root.setVgap(10);
 	        root.setHgap(20);
-		    root.getChildren().addAll(text1, text2, text3, button1, button2);
+		    root.getChildren().addAll(label1, text1, text2, text3, buttonValidate, buttonCancel, label);
 		          
-		    Scene scene1= new Scene(root, 210, 200);     
+		    Scene scene1= new Scene(root, 390, 220);     
 		    popupwindow.setScene(scene1);
 		    popupwindow.showAndWait();
 		});
-		addLevel.setOnAction(evt ->  {});
-		removeTheLast.setOnAction(evt -> {});
-		cancelProduction.setOnAction(evt -> {});
+		
+		addLevel.setOnAction(evt ->  {
+			int newLevel = nC.getLevel()+1;
+			double cost = Settings.COST_LEVEL*newLevel;
+			if(cost>nC.getTreasure()) {
+				infoAlert("Erreur, votre trésor est insufisant", "Information");
+			}
+			else {
+				nC.setTreasure(nC.getTreasure()-cost);
+			}
+		});
+		
+		
+		removeTheLast.setOnAction(evt -> {
+			if(nC.getlPUnit().size()>0) {
+				nC.getlPUnit().remove(nC.getlPUnit().size()-1);
+			}
+			else 
+				infoAlert("Erreur, vous n'avez pas de production en cours pour le moment","Information" );
+		});
+		
+		
+		cancelProduction.setOnAction(evt -> {
+			if(nC.getlPUnit().size()>0) {
+				while(nC.getlPUnit().size()>0) {
+					nC.getlPUnit().remove(nC.getlPUnit().size()-1);
+				}
+				infoAlert("Production annuler avec succés","Information" );
+			}
+			else
+				infoAlert("Erreur, vous n'avez pas de production en cours pour le moment","Information" );
+			
+		});
 		
 		contextMenu.getItems().addAll(addMenu, separator1, removeTheLast, separator2, cancelProduction);
 		contextMenu.show(img, x, y);

@@ -57,6 +57,7 @@ public class Main extends Application {
 	private boolean cliqueNormal = false; // Pour le clique sur les chateaux par défaut
 	private boolean cliqueNeutral = false; // Pour le clique sur les chateaux neutres;
 	private boolean attack = false; 	  // Pour le clique sur le chateaux de l'utilisateur
+	private boolean test = false;
 	//private boolean pause = true;
 	
 	private Troop piker = Troop.Piquier;
@@ -74,11 +75,11 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		
 		root = new Group();
-		ScrollPane scrollPane = new ScrollPane(root);
-		scrollPane.setVbarPolicy(ScrollBarPolicy.NEVER);
-		scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
-		scrollPane.setPannable(true);
-		scene = new Scene(scrollPane, Settings.SCENE_WIDTH, Settings.SCENE_HEIGHT + Settings.STATUS_BAR_HEIGHT);
+//		ScrollPane scrollPane = new ScrollPane(root);
+//		scrollPane.setVbarPolicy(ScrollBarPolicy.NEVER);
+//		scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
+//		scrollPane.setPannable(true);
+		scene = new Scene(root, Settings.SCENE_WIDTH, Settings.SCENE_HEIGHT + Settings.STATUS_BAR_HEIGHT);
 		scene.getStylesheets().add(getClass().getResource("/css/application.css").toExternalForm());
 		
 		// Create window
@@ -103,6 +104,7 @@ public class Main extends Application {
 		buttonNew.setOnAction(e ->  {
 	    	
 	    	root.getChildren().clear();
+	    	primaryStage.setResizable(true);
 			playfieldLayer = new Pane();
 			root.getChildren().add(playfieldLayer); 
 			
@@ -110,20 +112,35 @@ public class Main extends Application {
 			
 			gameLoop = new AnimationTimer() {
 				
-				int i = 0;
+				int i = 0, j, tour = 0;
 				@Override
 				public void handle(long now) {
 					processInput(input, now);
 					
-					if(i%100 == 0) {
-						System.out.println("Coucou "+i);
-						
+					if(i%10 == 0) {
+						for(int i=0; i<normalCastles.size(); i++) {
+							normalCastles.get(i).setTreasure(normalCastles.get(i).getLevel()*10);
+						}
+						j++;
 					}
+					
+					if(j == 100+50*tour)
+					{
+						for(int i=0; i<normalCastles.size(); i++) {
+							normalCastles.get(i).setLevel(normalCastles.get(i).getLevel()+1);
+						}
+						tour++;
+					}
+					
+					
+					
+					
 					// soldat movement
 					soldiersToDeploy.forEach(soldier -> soldier.spriteMove(normalCastles.get(0).getMoveOrder().getTargetX(), normalCastles.get(0).getMoveOrder().getTargetY()));
+					
 						
 					// update soldat in scene
-					soldiersToDeploy.forEach(sprite -> sprite.updateUI());
+					soldiersToDeploy.forEach(soldier -> soldier.updateUI());
 						
 					// remove removables soldiers from list, layer, etc
 					removeSoldiers(soldiersToDeploy);
@@ -140,7 +157,7 @@ public class Main extends Application {
 					} 
 					
 					
-					ScrollPaneController.Mouvement(input, scrollPane);
+					//ScrollPaneController.Mouvement(input, scrollPane);
 				}
 
 			};
@@ -210,7 +227,7 @@ public class Main extends Application {
 		
 		statusBar.getChildren().addAll(castleInformation1);
 		statusBar.getStyleClass().add("statusBar");
-		statusBar.relocate(0, playfieldLayer.getHeight()+Settings.SPRITE_DISTANCE);
+		statusBar.relocate(0, scene.getHeight()/*playfieldLayer.getHeight()+Settings.SPRITE_DISTANCE*/);
 		statusBar.setPrefSize(playfieldLayer.getWidth(), Settings.STATUS_BAR_HEIGHT);
 		statusBar.setAlignment(Pos.CENTER);
 		root.getChildren().add(statusBar);
@@ -257,10 +274,10 @@ public class Main extends Application {
 		if(whichCastle) {
 			NormalCastle normalCastle1;
 			Displacement displacement = new Displacement();
-			Production_Unit product = new Production_Unit();
+			ArrayList<Production_Unit> pUnits = new ArrayList<>();
 			createSoldier(soldiers, whichCastle, x+(img.getWidth()/2), y+(img.getHeight()/2));	// Create soldiers for castle
 			createPlayer(x+(img.getWidth()/2), y+(img.getHeight()/2));	// Création du joueur propriétaire du chateaux ainsi que ses soldats
-			normalCastle = new NormalCastle(img, playfieldLayer, x, y, 0.0, 1, soldiers, null, input, player, product, displacement);
+			normalCastle = new NormalCastle(img, playfieldLayer, x, y, 0.0, 1, soldiers, null, input, player, pUnits, displacement);
 			createGate(whichCastle);	// Création de la porte du châteaux
 				
 			normalCastles.add(normalCastle);	// Ajout du chateaux dans la liste de chateaux
@@ -272,8 +289,12 @@ public class Main extends Application {
 				if(attack && !"Duke1".equals(normalCastle.getDuke().getPlayerName())) {	// Pour lancer une attaque
 					cliqueNormal = false; attack = false;
 					if(normalCastles.get(0).getListSoldier().size()>0) {
-						soldiersToDeploy = Pupup.display(normalCastles.get(0));	// Récupération des soldats à déployer
-						normalCastle.attack(normalCastles.get(0), soldiersToDeploy);	// Attack du chateaux cible
+						if(soldiersToDeploy.size()<=0) {
+							soldiersToDeploy = Pupup.display(normalCastles.get(0));	// Récupération des soldats à déployer
+							normalCastle.attack(normalCastles.get(0), soldiersToDeploy);	// Attack du chateaux cible
+						}
+						else
+							Other.infoAlert("Pas de possibilité de lancer plusieurs attaques simultanement", "Information");
 					}
 					else 
 						Other.infoAlert("Désolé, vous n'avez pas d'armée dans votre reserve.", "Information");
@@ -286,8 +307,10 @@ public class Main extends Application {
 			});
 			
 			normalCastle1.getView().setOnContextMenuRequested(e -> {
-				if("Duke1".equals(normalCastle.getDuke().getPlayerName())) 
-					Other.ContextMenuPlayer(normalCastle1.getView(), e.getScreenX(), e.getScreenY());
+				if("Duke1".equals(normalCastle.getDuke().getPlayerName())) {
+					Other.ContextMenuPlayer(normalCastle1, normalCastle1.getView(), e.getScreenX(), e.getScreenY());
+					System.out.println("La taille est: "+normalCastle1.getlPUnit().size());
+				}
 			});
 		}
 		else {
@@ -312,8 +335,12 @@ public class Main extends Application {
 				if(attack && !"Duke1".equals(neutralCastle.getBaronName())) {	// Pour lancer une attaque
 					cliqueNeutral = false; attack = false;
 					if(normalCastles.get(0).getListSoldier().size()>0) {
-						soldiersToDeploy = Pupup.display(normalCastles.get(0));
-						neutralCastle.attack(normalCastles.get(0), soldiersToDeploy);	// Attack du chateaux cible
+						if(soldiersToDeploy.size()<=0) {
+							soldiersToDeploy = Pupup.display(normalCastles.get(0));
+							neutralCastle.attack(normalCastles.get(0), soldiersToDeploy);	// Attack du chateaux cible
+						}
+						else
+							Other.infoAlert("Pas de possibilité de lancer plusieurs attaques simultanement", "Information");
 					}
 					else 
 						Other.infoAlert("Désolé, vous n'avez pas d'armée dans votre reserve.", "Information");
@@ -487,7 +514,6 @@ public class Main extends Application {
 		while (iter.hasNext()) {
 			Soldier soldier = iter.next();
 			if (soldier.isRemovable()) {
-				soldier.removeFromLayer(); 	// remove from layer
 				iter.remove();	// remove from list
 			}
 		}

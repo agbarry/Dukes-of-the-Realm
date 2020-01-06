@@ -8,7 +8,7 @@ import javafx.scene.layout.Pane;
 public class NormalCastle extends Castle {
 	
 	private Player duke;
-	protected Production_Unit pUnit;	// L'unité de production
+	protected ArrayList<Production_Unit> lPUnit;	// La liste de soldat 
     private Displacement moveOrder;	// Ordre de déplacement 
 
 
@@ -27,12 +27,12 @@ public class NormalCastle extends Castle {
 	 * @param moveOrder
 	 */
 	public NormalCastle(Image image, Pane layer, double x, double y, double treasure, int level,
-			ArrayList<Soldier> listSoldier, Gate gate, Input input, Player duke, Production_Unit pUnit,
+			ArrayList<Soldier> listSoldier, Gate gate, Input input, Player duke, ArrayList<Production_Unit> lPUnit,
 			Displacement moveOrder) {
 		
 		super(image, layer, x, y, treasure, level, listSoldier, gate, input);
 		this.duke = duke;
-		this.pUnit = pUnit;
+		this.lPUnit = lPUnit;
 		this.moveOrder = moveOrder;
 	}
 	
@@ -43,13 +43,14 @@ public class NormalCastle extends Castle {
 	public void setDuke(Player duke) {
 		this.duke = duke;
 	}
+	
 
-	public Production_Unit getpUnit() {
-		return pUnit;
+	public ArrayList<Production_Unit> getlPUnit() {
+		return lPUnit;
 	}
 
-	public void setpUnit(Production_Unit pUnit) {
-		this.pUnit = pUnit;
+	public void setlPUnit(ArrayList<Production_Unit> lPUnit) {
+		this.lPUnit = lPUnit;
 	}
 
 	public Displacement getMoveOrder() {
@@ -79,7 +80,6 @@ public class NormalCastle extends Castle {
 				if(getListSoldier().size()>0) {
 					damagedBy(soldiers.get(i), pos);	// Application du dégat du soldat à un soldat tiré au hasard sur le chateau adverse
 					if( !soldiers.get(i).isApplicated() ) {
-						soldiers.get(i).remove();	// Pour pouvoir supprimer le soldat après l'application de tout son dégat aux soldats adverses
 						i++;
 					}
 					
@@ -95,8 +95,8 @@ public class NormalCastle extends Castle {
 					i++;
 				}
 			}
-			if(this.getListSoldier().size()==0) {	
-				this.setDuke(nC.getDuke());	// Changement du propriétaire du chateaux gagné après l'attaque
+			if(getListSoldier().size()==0) {	
+				setDuke(nC.getDuke());	// Changement du propriétaire du chateaux gagné après l'attaque
 			}
 			
 		}	

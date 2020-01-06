@@ -25,6 +25,8 @@ public class Soldier extends Sprite {
 		this.health = troopSoldier.getHealth();
         this.damage = troopSoldier.getDammage();
         this.speed = troopSoldier.getSpeed();
+        setDx(troopSoldier.getSpeed());
+        setDy(troopSoldier.getSpeed());
         
 		this.troopSoldier = troopSoldier;
 		
@@ -75,16 +77,31 @@ public class Soldier extends Sprite {
 	}
 
 	public void spriteMove(double cibleX, double cibleY) {
-		if(this.x<cibleX)
-			this.x += dx;
-		else
-			this.x -= dx;
+		if(x<cibleX) {
+			x += dx; 
+			if(x>cibleX)
+				x = cibleX; 
+		}
+		if(x>cibleX) {
+			x -= dx;
+			if(x<cibleX)
+				x=cibleX;
+		}
+		if(y<cibleY) {
+			y += dy;
+			if(y>cibleY)
+				y = cibleY;
+		}
+		if(y>cibleY) {
+			y -= dy;
+			if(y<cibleY)
+				y = cibleY;
+		}
 		
-		if(this.y<cibleY)
-			this.y += dy;
-		else
-			this.y -= dy;
-		
+		if(x==cibleX && y==cibleY) {
+			this.removeFromLayer();
+			this.remove();
+		}
 	}
 	
 	public void applicat() {

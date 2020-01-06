@@ -68,7 +68,6 @@ public class NeutralCastle extends Castle {
 				if(getListSoldier().size()>0) {
 					damagedBy(soldiers.get(i), pos);	// Application du dégat du soldat à un soldat tiré au hasard sur le chateau adverse
 					if( !soldiers.get(i).isApplicated() ) {
-						soldiers.get(i).remove();	// Pour pouvoir supprimer le soldat après l'application de tout son dégat aux soldats adverses
 						i++;
 					}
 					

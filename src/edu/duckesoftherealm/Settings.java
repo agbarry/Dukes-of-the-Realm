@@ -62,6 +62,9 @@ public class Settings {
     public static final double VBOX_X = 320;
     public static final double VBOX_Y = 206;
     
+    public static final double COST_LEVEL = 1000;
+    public static final double COMPLETE_TIME = 100;
+    
 
 /*    public static final double MISSILE_SPEED = 4.0;
     public static final int    MISSILE_HEALTH = 0;

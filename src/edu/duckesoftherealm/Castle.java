@@ -65,6 +65,15 @@ public abstract class Castle extends Sprite {
 	public void setListSoldier(ArrayList<Soldier> listSoldier) {
 		this.listSoldier = listSoldier;
 	}
+	
+	public void setTreasure(double treasure) {
+		this.treasure = treasure;
+	}
+
+
+	public void setLevel(int level) {
+		this.level = level;
+	}
 
 	
 	public Gate getGate() {
@@ -109,7 +118,8 @@ public abstract class Castle extends Sprite {
 	}
 	
 	public abstract void attack(NormalCastle nC, ArrayList<Soldier> soldiers);
-	
+
+
 	public abstract void extractSoldiersToDeploy(ArrayList<Soldier> soldiers, int piker, int knight, int onager);
 
 

@@ -21,6 +21,7 @@ public class Pupup {
 		
 	    Stage popupwindow=new Stage();    
 	    popupwindow.initModality(Modality.APPLICATION_MODAL);
+	    popupwindow.setResizable(false);
 	    popupwindow.setTitle("Lancement d'attaque"); 
 	    
 	    FlowPane root = new FlowPane();
@@ -42,10 +43,10 @@ public class Pupup {
 	    text3.setPromptText("Nombre d'onagre");
 	    text3.setPrefWidth(160);
 	    
-	    Button button1= new Button("Valider");
-	    button1.setDefaultButton(true);
-	    button1.setPadding(new Insets(10));
-	    button1.setOnAction(action -> {
+	    Button buttonValidate= new Button("Valider");
+	    buttonValidate.setDefaultButton(true);
+	    buttonValidate.setPadding(new Insets(10));
+	    buttonValidate.setOnAction(action -> {
 	    	// Si les données saisi par le joueur sont bonnes on procéde à la constitution des soldats à déployer
 	    	if( PupupController.controlBeforeAttack(text1, text2, text3, nC, label2) ) {	
 	    		int nPiker = Integer.parseInt(text1.getText());
@@ -57,15 +58,15 @@ public class Pupup {
 	    	
 	    });
 	    
-	    Button button2 = new Button("Annuler");
-	    button2.setDefaultButton(true);
-	    button2.setPadding(new Insets(10));
-	    button2.setOnAction(e -> popupwindow.close());
+	    Button buttonCancel = new Button("Annuler");
+	    buttonCancel.setDefaultButton(true);
+	    buttonCancel.setPadding(new Insets(10));
+	    buttonCancel.setOnAction(e -> popupwindow.close());
 	    
         root.setPadding(new Insets(12));
         root.setVgap(12);
         root.setHgap(20);       
-	    root.getChildren().addAll(label1, text1, text2, text3, button1, button2, label2);
+	    root.getChildren().addAll(label1, text1, text2, text3, buttonValidate, buttonCancel, label2);
 	          
 	    Scene scene1= new Scene(root, 390, 230);     
 	    popupwindow.setScene(scene1);

@@ -42,9 +42,11 @@ public class Other {
 		MenuItem addProduction = new MenuItem("Production");
 		MenuItem addLevel= new MenuItem("Niveau");
 		addMenu.getItems().addAll(addProduction, addLevel);
-		
 		SeparatorMenuItem separator1 = new SeparatorMenuItem();
-		MenuItem removeTheLast= new MenuItem("Retirer le dernier");
+		Menu removeMenu = new Menu("Retirer");
+		MenuItem removeTheLastProduc= new MenuItem("La dernière production");
+		MenuItem removeTheLastLevel = new MenuItem("Le dernier niveau");
+		removeMenu.getItems().addAll(removeTheLastProduc, removeTheLastLevel);
 		SeparatorMenuItem separator2 = new SeparatorMenuItem();
 		MenuItem cancelProduction = new MenuItem("Annuler la production");
 		
@@ -130,9 +132,27 @@ public class Other {
 		});
 		
 		
-		removeTheLast.setOnAction(evt -> {
+		removeTheLastProduc.setOnAction(evt -> {
 			if(nC.getlPUnit().size()>0) {
-				nC.getlPUnit().remove(nC.getlPUnit().size()-1);
+				for(int i=(nC.getlPUnit().size()-1); i>0; i--) {
+					if( nC.getlPUnit().get(i).isTest() ) {
+						nC.getlPUnit().remove(i);
+						break;
+					}
+				}
+			}
+			else 
+				infoAlert("Erreur, vous n'avez pas de production en cours pour le moment","Information" );
+		});
+		
+		removeTheLastLevel.setOnAction(evt -> {
+			if(nC.getlPUnit().size()>0) {
+				for(int i=(nC.getlPUnit().size()-1); i>0; i--) {
+					if( !nC.getlPUnit().get(i).isTest() ) {
+						nC.getlPUnit().remove(i);
+						break;
+					}
+				}
 			}
 			else 
 				infoAlert("Erreur, vous n'avez pas de production en cours pour le moment","Information" );
@@ -151,7 +171,7 @@ public class Other {
 			
 		});
 		
-		contextMenu.getItems().addAll(addMenu, separator1, removeTheLast, separator2, cancelProduction);
+		contextMenu.getItems().addAll(addMenu, separator1, removeMenu, separator2, cancelProduction);
 		contextMenu.show(img, x, y);
 	}
     

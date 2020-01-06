@@ -124,7 +124,7 @@ public class PupupController {
     			else {
     				double total = (Troop.Piquier.getProductionCost()*Integer.parseInt(txt1.getText())) + (Troop.Chevalier.getProductionCost()*Integer.parseInt(txt2.getText())) +
         					(Troop.Onagre.getProductionCost()*Integer.parseInt(txt3.getText()) );
-    				System.out.println("Total: "+total);
+    				
     				nC.setTreasure(nC.getTreasure()-total);
     				valid = true;
     			}

@@ -112,16 +112,17 @@ public class Main extends Application {
 			
 			gameLoop = new AnimationTimer() {
 				
-				int i = 0, j, tour = 0;
+				int i = 0, tour = 0, j = 0;
 				@Override
 				public void handle(long now) {
 					processInput(input, now);
 					
-					if(i%10 == 0) {
+					if(i == 10) {
 						for(int i=0; i<normalCastles.size(); i++) {
 							normalCastles.get(i).setTreasure(normalCastles.get(i).getLevel()*10);
 						}
 						j++;
+						i = 0;
 					}
 					
 					if(j == 100+50*tour)
@@ -131,8 +132,6 @@ public class Main extends Application {
 						}
 						tour++;
 					}
-					
-					
 					
 					
 					// soldat movement

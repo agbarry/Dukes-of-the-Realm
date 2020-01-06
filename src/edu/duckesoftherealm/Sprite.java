@@ -16,8 +16,6 @@ public abstract class Sprite {
     protected double dx;
     protected double dy; 
 
-    private boolean removable = false;
-
     private double w;	// La largeur de l'image
     private double h;	// La hauteur de l'image
 
@@ -59,11 +57,6 @@ public abstract class Sprite {
 
     public void setY(double y) {
         this.y = y;
-    }
-
-
-    public boolean isRemovable() {
-        return removable;
     }
 
 
@@ -116,13 +109,8 @@ public abstract class Sprite {
     public boolean collidesWith(Sprite sprite) {
     	return getView().getBoundsInParent().intersects(sprite.getView().getBoundsInParent());
     }
-
-    public void remove() {
-        this.removable = true;
-    }
     
-    
-    public abstract void spriteMove(double x, double y);
+    //public abstract void spriteMove(double x, double y);
 
     public abstract void checkRemovability();
 

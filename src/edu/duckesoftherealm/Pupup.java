@@ -24,29 +24,30 @@ public class Pupup {
 	    popupwindow.setTitle("Lancement d'attaque"); 
 	    
 	    FlowPane root = new FlowPane();
-	          
-	    Label label1= new Label("Nombre de piquier: ");
-	    Label label2= new Label("Nombre de chevalier: ");
-	    Label label3= new Label("Nombre d'onagre:   ");
-	    Label label4 = new Label("			Vous avez:  "+nC.nbreTypeSoldier("Piquier")+" Piquier,		"+nC.nbreTypeSoldier("Chevalier")+
-	    		" Chevalier	  et	"+nC.nbreTypeSoldier("Onagre")+" Onagre");
-	    label4.setPrefHeight(80);
-	    Label label5 = new Label();
-	    label5.setPrefHeight(60);
-	    label5.setTextFill(Color.RED);
+	    
+	    Label label1 = new Label("	Vous avez:  "+nC.nbreTypeSoldier("Piquier")+" Piquier |"+nC.nbreTypeSoldier("Chevalier")+
+	    		" Chevalier |"+nC.nbreTypeSoldier("Onagre")+" Onagre");
+	    label1.setPrefHeight(60);
+	    Label label2 = new Label();
+	    label2.setPrefHeight(60);
+	    label2.setTextFill(Color.RED);
 	    
 	    TextField text1 = new TextField();
-	    text1.setMaxWidth(120);
+	    text1.setPromptText("Nombre de piquier");
+	    text1.setPrefWidth(160);
 	    TextField text2 = new TextField();
-	    text2.setMaxWidth(120);
+	    text2.setPromptText("Nombre de chevalier");
+	    text2.setPrefWidth(160);
 	    TextField text3 = new TextField();
-	    text3.setMaxWidth(140);
+	    text3.setPromptText("Nombre d'onagre");
+	    text3.setPrefWidth(160);
 	    
 	    Button button1= new Button("Valider");
+	    button1.setDefaultButton(true);
 	    button1.setPadding(new Insets(10));
 	    button1.setOnAction(action -> {
 	    	// Si les données saisi par le joueur sont bonnes on procéde à la constitution des soldats à déployer
-	    	if( PupupController.controlBeforeAttack(text1, text2, text3, nC, label5) ) {	
+	    	if( PupupController.controlBeforeAttack(text1, text2, text3, nC, label2) ) {	
 	    		int nPiker = Integer.parseInt(text1.getText());
 	    		int nKnight = Integer.parseInt(text2.getText());
 	    		int nOnager = Integer.parseInt(text3.getText());
@@ -57,15 +58,16 @@ public class Pupup {
 	    });
 	    
 	    Button button2 = new Button("Annuler");
+	    button2.setDefaultButton(true);
 	    button2.setPadding(new Insets(10));
 	    button2.setOnAction(e -> popupwindow.close());
 	    
-        root.setPadding(new Insets(20));
-        root.setVgap(10);
+        root.setPadding(new Insets(12));
+        root.setVgap(12);
         root.setHgap(20);       
-	    root.getChildren().addAll(label4, label1, text1, label2, text2, label3, text3, button1, button2, label5);
+	    root.getChildren().addAll(label1, text1, text2, text3, button1, button2, label2);
 	          
-	    Scene scene1= new Scene(root, 620, 250);     
+	    Scene scene1= new Scene(root, 390, 230);     
 	    popupwindow.setScene(scene1);
 	    popupwindow.showAndWait();
 	    

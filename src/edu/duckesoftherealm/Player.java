@@ -41,11 +41,6 @@ public class Player extends Sprite {
 		
 	}
 
-	@Override
-	public void spriteMove(double x, double y) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	
 }

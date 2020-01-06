@@ -16,7 +16,6 @@ public class Settings {
 	public static final int MIN_NUMBER_CAMPAIGN = 5;
 	public static final int MEDIUM_NUMBER_CAMPAIGN = 10;
 	
-	
 	// The properties of pikemen
 	public static final double PIKER_PRODUCTIONCOST = 100;
 	public static final int    PIKER_PRODUCTIONTIME = 5;

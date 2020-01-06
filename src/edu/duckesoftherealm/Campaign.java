@@ -14,11 +14,5 @@ public class Campaign extends Sprite {
 		// TODO Auto-generated method stub
 		
 	}
-
-	@Override
-	public void spriteMove(double x, double y) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 }

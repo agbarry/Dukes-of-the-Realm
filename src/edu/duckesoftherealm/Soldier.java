@@ -17,6 +17,8 @@ public class Soldier extends Sprite {
 	private double speed;		// La vitesse du soldat
 	private Troop troopSoldier;	// Le type de troupe du soldat
 	
+	private boolean removable = false;
+	
 	public Soldier(Pane layer, Image image, double x, double y, Troop troopSoldier) {
 		super(layer, image, x, y);
 		
@@ -59,12 +61,10 @@ public class Soldier extends Sprite {
 	public Troop getTroopSoldier() {
 		return troopSoldier;
 	}
-
-	@Override
-	public void checkRemovability() {
-		// TODO Auto-generated method stub
-		
-	}
+	
+	public boolean isRemovable() {
+        return removable;
+    }
 	
 	public boolean isAlive() {
         return health > 0;
@@ -74,7 +74,6 @@ public class Soldier extends Sprite {
 		return  damage > 0;
 	}
 
-	@Override
 	public void spriteMove(double cibleX, double cibleY) {
 		if(this.x<cibleX)
 			this.x += dx;
@@ -97,5 +96,14 @@ public class Soldier extends Sprite {
 		this.setHealth(this.getHealth()-1);
 	}
 	
+	public void remove() {
+        this.removable = true;
+    }
+	
+	@Override
+	public void checkRemovability() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

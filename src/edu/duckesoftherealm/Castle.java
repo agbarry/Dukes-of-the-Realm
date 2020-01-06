@@ -108,8 +108,9 @@ public abstract class Castle extends Sprite {
 		}
 	}
 	
-	public abstract void attack(ArrayList<NormalCastle> castles, ArrayList<Soldier> soldiers);
+	public abstract void attack(NormalCastle nC, ArrayList<Soldier> soldiers);
 	
 	public abstract void extractSoldiersToDeploy(ArrayList<Soldier> soldiers, int piker, int knight, int onager);
+
 
 }

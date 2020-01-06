@@ -1,6 +1,6 @@
 package edu.duckesoftherealm.controller;
 
-import edu.duckesoftherealm.Dialog;
+import edu.duckesoftherealm.Other;
 import edu.duckesoftherealm.NormalCastle;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -24,7 +24,7 @@ public class PupupController {
     	if( (txt1.getText().isEmpty() & txt2.getText().isEmpty() & txt3.getText().isEmpty()) || (txt1.getText().isEmpty() & txt2.getText().isEmpty() & !txt3.getText().isEmpty()) ||
     		(txt1.getText().isEmpty() & !txt2.getText().isEmpty() & txt3.getText().isEmpty()) || (!txt1.getText().isEmpty() & txt2.getText().isEmpty() & txt3.getText().isEmpty()) ) {
     		
-    		Dialog.errorAlert("Erreur, tous les champs doivent être renseigner avant de valider", "Avertissement");
+    		Other.errorAlert("Erreur, tous les champs doivent être renseigner avant de valider", "Avertissement");
     		txt1.requestFocus();
     	}
     	else if( txt1.getText().isEmpty() & !txt2.getText().isEmpty() & !txt3.getText().isEmpty() ) {

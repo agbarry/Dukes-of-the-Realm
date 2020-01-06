@@ -82,15 +82,11 @@ public class Input {
 		return is(RIGHT) && !is(LEFT);
 	}
 
-	public boolean isFire() {
-		return is(SPACE);
-	}
-
 	public boolean isExit() {
 		return is(ESCAPE);
 	}
 	
 	public boolean isPause() {
-		return is(P);
+		return is(SPACE);
 	}
 }

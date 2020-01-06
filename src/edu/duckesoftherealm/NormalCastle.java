@@ -67,39 +67,38 @@ public class NormalCastle extends Castle {
 	}
 
 	@Override
-	public void spriteMove(double x, double y) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void attack(ArrayList<NormalCastle> castles, ArrayList<Soldier> soldiers) {
+	public void attack(NormalCastle nC, ArrayList<Soldier> soldiers) {
 		if(soldiers.size()>0) {
 			// Modification de l'ordre de déplacement du chateaux de l'utilisateur
-			castles.get(0).getMoveOrder().setTargetX(this.getView().getLayoutX());
-			castles.get(0).getMoveOrder().setTargetY(this.getView().getLayoutY());
-			castles.get(0).getMoveOrder().setNumberTroop(soldiers.size());
+			nC.getMoveOrder().setTargetX(this.getView().getLayoutX());
+			nC.getMoveOrder().setTargetY(this.getView().getLayoutY());
+			nC.getMoveOrder().setNumberTroop(soldiers.size());
 			
-			int pos = rnd.nextInt(this.getListSoldier().size());
-			while(soldiers.size()>0) {
-				this.damagedBy(soldiers.get(0), pos);
-				if( !soldiers.get(0).isApplicated() ) {
-					soldiers.get(0).removeFromLayer();
-					soldiers.remove(0);
+			int pos = rnd.nextInt(this.getListSoldier().size()), i = 0;
+			while(i<soldiers.size()) {
+				if(getListSoldier().size()>0) {
+					damagedBy(soldiers.get(i), pos);	// Application du dégat du soldat à un soldat tiré au hasard sur le chateau adverse
+					if( !soldiers.get(i).isApplicated() ) {
+						soldiers.get(i).remove();	// Pour pouvoir supprimer le soldat après l'application de tout son dégat aux soldats adverses
+						i++;
+					}
+					
+					if( !getListSoldier().get(pos).isAlive() ) {
+						getListSoldier().get(pos).removeFromLayer();	// Remove from layer
+						getListSoldier().remove(pos);	// 	Remove from list
+						if(getListSoldier().size()>0)
+							pos = rnd.nextInt(getListSoldier().size());
+					}
 				}
-				
-				if( !this.getListSoldier().get(pos).isAlive() ) {
-					this.getListSoldier().get(pos).removeFromLayer();
-					this.getListSoldier().remove(pos);
-					if(this.getListSoldier().size()>0)
-						pos = rnd.nextInt(this.getListSoldier().size());
-				}
-				
-				if(this.getListSoldier().size()==0) {	// Si la liste des soldats du chateaux attaqué est non null
-					this.setDuke(castles.get(0).getDuke());
-					break;
+				else {
+					soldiers.get(i).remove();
+					i++;
 				}
 			}
+			if(this.getListSoldier().size()==0) {	
+				this.setDuke(nC.getDuke());	// Changement du propriétaire du chateaux gagné après l'attaque
+			}
+			
 		}	
 	}
 

@@ -1,7 +1,8 @@
 package edu.duckesoftherealm;
 
 import java.util.ArrayList;
-
+import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
 import edu.duckesoftherealm.controller.ScrollPaneController;
@@ -56,6 +57,7 @@ public class Main extends Application {
 	private boolean cliqueNormal = false; // Pour le clique sur les chateaux par défaut
 	private boolean cliqueNeutral = false; // Pour le clique sur les chateaux neutres;
 	private boolean attack = false; 	  // Pour le clique sur le chateaux de l'utilisateur
+	//private boolean pause = true;
 	
 	private Troop piker = Troop.Piquier;
 	private Troop knight = Troop.Chevalier;
@@ -107,18 +109,28 @@ public class Main extends Application {
 			loadGame(); // Pour le chargement du jeu.
 			
 			gameLoop = new AnimationTimer() {
+				
+				int i = 0;
 				@Override
 				public void handle(long now) {
 					processInput(input, now);
 					
+					if(i%100 == 0) {
+						System.out.println("Coucou "+i);
+						
+					}
 					// soldat movement
-					soldiersToDeploy.forEach(sprite -> sprite.spriteMove(normalCastles.get(0).getMoveOrder().getTargetX(), normalCastles.get(0).getMoveOrder().getTargetY()));
-					
+					soldiersToDeploy.forEach(soldier -> soldier.spriteMove(normalCastles.get(0).getMoveOrder().getTargetX(), normalCastles.get(0).getMoveOrder().getTargetY()));
+						
 					// update soldat in scene
 					soldiersToDeploy.forEach(sprite -> sprite.updateUI());
-
+						
+					// remove removables soldiers from list, layer, etc
+					removeSoldiers(soldiersToDeploy);
+	
 					// Pour l'affichage des infos d'un chateaux
 					update();
+					i++;
 				}
 
 				private void processInput(Input input, long now) {
@@ -126,6 +138,7 @@ public class Main extends Application {
 						Platform.exit();
 						System.exit(0);
 					} 
+					
 					
 					ScrollPaneController.Mouvement(input, scrollPane);
 				}
@@ -142,12 +155,6 @@ public class Main extends Application {
 	    buttonRestart.setDefaultButton(true);
 	    buttonRestart.setOnAction( action -> {} );
 	    
-	    Button buttonAbout = new Button("A propos");
-	    buttonAbout.setPrefWidth(Settings.DEFAULT_BUTTON_WIDTH);
-	    buttonAbout.setPrefHeight(Settings.DEFAULT_BUTTON_HEIGHT);
-	    buttonAbout.setDefaultButton(true);
-	    buttonAbout.setOnAction( action -> {});
-	    
 	    Button buttonQuit = new Button("Quitter");
 	    buttonQuit.setPrefWidth(Settings.DEFAULT_BUTTON_WIDTH);
 	    buttonQuit.setPrefHeight(Settings.DEFAULT_BUTTON_HEIGHT);
@@ -157,7 +164,7 @@ public class Main extends Application {
 			System.exit(0);
 	    });
 	    
-	    vBox.getChildren().addAll(buttonNew, buttonRestart, buttonAbout, buttonQuit);
+	    vBox.getChildren().addAll(buttonNew, buttonRestart, buttonQuit);
 	    
 	    anchorPane.getChildren().add(vBox);
 	    AnchorPane.setTopAnchor(vBox, Settings.VBOX_Y);
@@ -246,19 +253,19 @@ public class Main extends Application {
 	
 	// Méthode permettant de créer un chateaux
 	private void createCastle(int x, int y, Image img, boolean whichCastle) {
+		ArrayList<Soldier> soldiers = new ArrayList<>();
 		if(whichCastle) {
 			NormalCastle normalCastle1;
 			Displacement displacement = new Displacement();
 			Production_Unit product = new Production_Unit();
-			normalCastle = new NormalCastle(img, playfieldLayer, x, y, 0.0, 1, null, null, input, null, product, displacement);
-				
+			createSoldier(soldiers, whichCastle, x+(img.getWidth()/2), y+(img.getHeight()/2));	// Create soldiers for castle
+			createPlayer(x+(img.getWidth()/2), y+(img.getHeight()/2));	// Création du joueur propriétaire du chateaux ainsi que ses soldats
+			normalCastle = new NormalCastle(img, playfieldLayer, x, y, 0.0, 1, soldiers, null, input, player, product, displacement);
 			createGate(whichCastle);	// Création de la porte du châteaux
-			createPlayer();	// Création du joueur propriétaire du chateaux ainsi que ses soldats
-			createSoldier(whichCastle);	// Création de la liste des soldats du châteaux
 				
 			normalCastles.add(normalCastle);	// Ajout du chateaux dans la liste de chateaux
-			normalCastle1 = normalCastle;
 			
+			normalCastle1 = normalCastle;
 			normalCastle1.getView().setOnMousePressed(e -> {
 				normalCastle = normalCastle1; cliqueNormal = true; cliqueNeutral = false;
 					
@@ -266,45 +273,54 @@ public class Main extends Application {
 					cliqueNormal = false; attack = false;
 					if(normalCastles.get(0).getListSoldier().size()>0) {
 						soldiersToDeploy = Pupup.display(normalCastles.get(0));	// Récupération des soldats à déployer
-						normalCastle.attack(normalCastles, soldiersToDeploy);	// Attack du chateaux cible
+						normalCastle.attack(normalCastles.get(0), soldiersToDeploy);	// Attack du chateaux cible
 					}
-					else {
-						Dialog.infoAlert("Désolé, vous n'avez pas d'armée dans votre reserve.", "Information");
-					}
+					else 
+						Other.infoAlert("Désolé, vous n'avez pas d'armée dans votre reserve.", "Information");
 				}
 					
-				if( "Duke1".equals(normalCastle.getDuke().getPlayerName()) ) {
+				if( "Duke1".equals(normalCastle.getDuke().getPlayerName()) ) 
 					attack = true;
-				}
 					
 				e.consume();
+			});
+			
+			normalCastle1.getView().setOnContextMenuRequested(e -> {
+				if("Duke1".equals(normalCastle.getDuke().getPlayerName())) 
+					Other.ContextMenuPlayer(normalCastle1.getView(), e.getScreenX(), e.getScreenY());
 			});
 		}
 		else {
 			NeutralCastle neutralCastle1;
-			neutralCastle = new NeutralCastle(img, playfieldLayer, x, y, 0.0, 1, null, null, input, "Baron");
+			createSoldier(soldiers, whichCastle, x+img.getWidth()/2, y+(img.getHeight()/2));	// Create soldiers for castle
+			int x1;
+			if(neutralCastles.size()>0) {
+				String NameTmp = neutralCastles.get(neutralCastles.size()-1).getBaronName().substring(5);
+				x1 = Integer.parseInt(NameTmp)+1;
+			}
+			else 
+				x1 = 1;
+			String BaronName = "Baron"+x1;
+			neutralCastle = new NeutralCastle(img, playfieldLayer, x, y, 0.0, 1, soldiers, null, input, BaronName);
 			createGate(whichCastle);	// Création de la porte du châteaux
-			createSoldier(whichCastle);	// Création de la liste des soldats du châteaux
 			
 			neutralCastles.add(neutralCastle);		// Ajout du chateaux dans la liste de chateaux
-			neutralCastle1 = neutralCastle;
 			
+			neutralCastle1 = neutralCastle;
 			neutralCastle1.getView().setOnMousePressed(e -> {
 				neutralCastle = neutralCastle1; cliqueNeutral = true; cliqueNormal = false;
 				if(attack && !"Duke1".equals(neutralCastle.getBaronName())) {	// Pour lancer une attaque
 					cliqueNeutral = false; attack = false;
 					if(normalCastles.get(0).getListSoldier().size()>0) {
 						soldiersToDeploy = Pupup.display(normalCastles.get(0));
-						neutralCastle.attack(normalCastles, soldiersToDeploy);	// Attack du chateaux cible
+						neutralCastle.attack(normalCastles.get(0), soldiersToDeploy);	// Attack du chateaux cible
 					}
-					else {
-						Dialog.infoAlert("Désolé, vous n'avez pas d'armée dans votre reserve.", "Information");
-					}
+					else 
+						Other.infoAlert("Désolé, vous n'avez pas d'armée dans votre reserve.", "Information");
 				}
 				
-				if( "Duke1".equals(neutralCastle.getBaronName()) ) {
+				if( "Duke1".equals(neutralCastle.getBaronName()) )
 					attack = true;
-				}
 				
 				e.consume();
 			});
@@ -312,41 +328,28 @@ public class Main extends Application {
 	}
 	
 	// Méthode permettant de créer un joueur
-	private void createPlayer() {
-		String playerName = "Duke";
-		double x = normalCastle.getCenterX();
-		double y = normalCastle.getCenterY();
+	private void createPlayer(double x, double y) {
 		
 		int x1;
 		if(normalCastles.size()>0) {
 			String NameTmp = normalCastles.get(normalCastles.size()-1).getDuke().getPlayerName().substring(4);
 			x1 = Integer.parseInt(NameTmp)+1;
 		}
-		else {
+		else 
 			x1 = 1;
-		}
-		playerName = playerName+x1;
 		
-		player = new Player(playfieldLayer, playerImage, x, y, Settings.PLAYER_HEALTH, input, playerName);	
-		normalCastle.setDuke(player);	// Modification du propriétaire du chateaux;
+		String playerName = "Duke"+x1;
+		player = new Player(playfieldLayer, playerImage, x, y, Settings.PLAYER_HEALTH, input, playerName);
 	}
 	
 	// Méthode permettant de créer la liste des soldats
-	private void createSoldier(boolean forWhichCastle) {
-		ArrayList<Soldier> soldiers = new ArrayList<>();
+	private void createSoldier(ArrayList<Soldier> soldiers, boolean forWhichCastle, double x, double y) {
 		
-		double x, y;
 		int n;
-		if(forWhichCastle) {
-			x = normalCastle.getCenterX();
-			y = normalCastle.getCenterY();
+		if(forWhichCastle) 
 			n = rnd.nextInt(40)+10;
-		}
-		else {
-			x = neutralCastle.getCenterX();
-			y = neutralCastle.getCenterY();
+		else 
 			n = rnd.nextInt(20)+10;
-		}
 		
 		int nbrePiquier = 0, nbreChevalier = 0,  nbreOnagre = 0, nbreS = n/10;
 		
@@ -382,24 +385,19 @@ public class Main extends Application {
 		}
 		
 		for(int i=0; i<nbrePiquier; i++) {
-			Soldier soldier = new Soldier(playfieldLayer, soldierImage, x-20, y, piker);
+			Soldier soldier = new Soldier(playfieldLayer, soldierImage, x, y, piker);
 			soldiers.add(soldier);
 		}
 		
 		for(int i=0; i<nbreChevalier; i++) {
-			Soldier soldier = new Soldier(playfieldLayer, soldierImage, x-20, y, knight);
+			Soldier soldier = new Soldier(playfieldLayer, soldierImage, x, y, knight);
 			soldiers.add(soldier);
 		}
 		
 		for(int i=0; i<nbreOnagre; i++) {
-			Soldier soldier = new Soldier(playfieldLayer, soldierImage, x-20, y, onager);
+			Soldier soldier = new Soldier(playfieldLayer, soldierImage, x, y, onager);
 			soldiers.add(soldier);
 		}
-		
-		if(forWhichCastle)
-			normalCastle.setListSoldier(soldiers);
-		else
-			neutralCastle.setListSoldier(soldiers);
 	}
 	
 	// Permet de créer la porte d'un chateaux
@@ -483,19 +481,71 @@ public class Main extends Application {
 		}
 	}
 	
+	// Pour la supression des soldats après chaque attaque
+	private void removeSoldiers(List<? extends Soldier> soldierList) {
+		Iterator<? extends Soldier> iter = soldierList.iterator();
+		while (iter.hasNext()) {
+			Soldier soldier = iter.next();
+			if (soldier.isRemovable()) {
+				soldier.removeFromLayer(); 	// remove from layer
+				iter.remove();	// remove from list
+			}
+		}
+	}
+	
+	private void gamePause() {
+		AnchorPane anchorPane = new AnchorPane();
+		anchorPane.getStyleClass().add("anchorPane");
+		
+		VBox vbox = new VBox();
+		vbox.setPadding(new Insets(30, 50, 30, 50));
+		Background bgGreen = new Background( new BackgroundFill(Color.LIGHTBLUE, new CornerRadii(10), null ),
+							 new BackgroundFill(Color.ALICEBLUE, new CornerRadii(40), null ));
+		vbox.setBackground(bgGreen);
+		vbox.getStyleClass().add("bonjour");
+		Button buttonContinue = new Button("Continuer");
+		buttonContinue.setPrefWidth(Settings.DEFAULT_BUTTON_WIDTH);
+		buttonContinue.setPrefHeight(Settings.DEFAULT_BUTTON_HEIGHT);
+		buttonContinue.setDefaultButton(true);
+		buttonContinue.getStyleClass().add("buttonContinue"); 
+		
+		Button buttonRestart = new Button("Recommencer");
+	    buttonRestart.setPrefWidth(Settings.DEFAULT_BUTTON_WIDTH);
+	    buttonRestart.setPrefHeight(Settings.DEFAULT_BUTTON_HEIGHT);
+	    buttonRestart.setDefaultButton(true);
+	    buttonRestart.getStyleClass().add("buttonRestart");
+	    
+	    Button buttonQuit = new Button("Quitter");
+	    buttonQuit.setPrefWidth(Settings.DEFAULT_BUTTON_WIDTH);
+	    buttonQuit.setPrefHeight(Settings.DEFAULT_BUTTON_HEIGHT);
+	    buttonQuit.setDefaultButton(true);
+	    buttonQuit.setOnAction(action -> {
+	    	root.getChildren().remove(anchorPane);
+	    });
+	    buttonQuit.getStyleClass().add("buttonQuit");
+	    
+		vbox.getChildren().addAll(buttonContinue, buttonRestart, buttonQuit);
+		anchorPane.getChildren().add(vbox);
+	    AnchorPane.setTopAnchor(vbox, Settings.VBOX_Y);
+	    AnchorPane.setLeftAnchor(vbox, Settings.VBOX_X);
+		 
+		root.getChildren().add(anchorPane);
+		gameLoop.stop();
+	}
+	
 	// Permet de faire la mise à jour des infos sur la barre des tâches
 	private void update() {
 		// L'ajout de la condition sur la liste de soldat est à vérifier demain
 		if(cliqueNormal) {
-			castleInformation1.setText("Propriétaire: "+normalCastle.getDuke().getPlayerName()+" |Niveau: "+normalCastle.getLevel()+
+			castleInformation1.setText( "Propriétaire: "+normalCastle.getDuke().getPlayerName()+" |Niveau: "+normalCastle.getLevel()+
 					" |Quantité total de soldats: "+normalCastle.getListSoldier().size()+" dont: {"+normalCastle.nbreTypeSoldier("Piquier")+" Piquier |"+
-					normalCastle.nbreTypeSoldier("Chevalier")+" Chevalier |"+normalCastle.nbreTypeSoldier("Onage")+" Onagre}" );
+					normalCastle.nbreTypeSoldier("Chevalier")+" Chevalier |"+normalCastle.nbreTypeSoldier("Onage")+" Onagre} |Trésor: "+normalCastle.getTreasure() );
 		}
 		
 		if(cliqueNeutral) {
 			castleInformation1.setText("Propriétaire: "+neutralCastle.getBaronName()+" |Niveau: "+neutralCastle.getLevel()+
 					" |Quantité de troupes: "+neutralCastle.getListSoldier().size()+" dont: {"+neutralCastle.nbreTypeSoldier("Piquier")+" Piquier |"+
-					neutralCastle.nbreTypeSoldier("Chevalier")+" Chevalier |"+neutralCastle.nbreTypeSoldier("Onage")+" Onagre}" );
+					neutralCastle.nbreTypeSoldier("Chevalier")+" Chevalier |"+neutralCastle.nbreTypeSoldier("Onage")+" Onagre} |Trésor: "+neutralCastle.getTreasure()  );
 		}
 	}
 	

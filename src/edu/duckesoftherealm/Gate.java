@@ -24,19 +24,4 @@ public class Gate extends Sprite {
 		
 	}
 
-	@Override
-	public void spriteMove(double x, double y) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	
-	
-	
-    
-    
-	
-    
-    
-
 }
